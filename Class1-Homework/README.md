@@ -1,6 +1,7 @@
 # The Reclaiming My Timer
 Right.  So your dudebro coworkers don't think they hog all the speaking time in a meeting, right?  Do they accuse you of interrupting them - when the reality is that you have to, just to make yourself heard at all?  Well this is a way to gather hard data and shut those bloviators up!  
 ![image](https://user-images.githubusercontent.com/17057481/160228451-81c2605b-ef88-42a0-89b5-14e12caf9d74.png)
+
 (photo credit: https://www.blackenterprise.com/career-lessons-from-auntie-maxine-reclaim-time-boss/)
 
 ![IMG_3445](https://user-images.githubusercontent.com/17057481/160228813-111d75ea-d181-49aa-bac9-9facd490a778.jpg)
