@@ -1,5 +1,5 @@
 # The Reclaiming My Timer
-Right.  So your dudebro coworkers don't think they hog all the speaking time in a meeting, right?  Do they accuse you of interrupting them - when the reality is that you have to, just to make yourself heard at all?  Well this is a way to gather hard data and shut those bloviators up!  
+Right.  So your dudebro coworkers don't think they hog all the speaking time in a meeting, huh?  Do they accuse you of interrupting them - when the reality is that you have to, just to make yourself heard at all?  Well this is a way to gather hard data and shut those bloviators up!  
 ![image](https://user-images.githubusercontent.com/17057481/160228451-81c2605b-ef88-42a0-89b5-14e12caf9d74.png)
 
 (photo credit: https://www.blackenterprise.com/career-lessons-from-auntie-maxine-reclaim-time-boss/)
@@ -17,8 +17,7 @@ I intend to use the RP2040 because I want to learn about!  However, I've never w
 ![IMG_3444](https://user-images.githubusercontent.com/17057481/160228239-2e8dcb3e-644d-45e8-98a4-8ff2ddd1aa3b.jpg)
 
 ## Hierarchy of Control:
-The block under "Main" says LEDs.  Sorry, I figured I could either spend my time learning block diagram tools, or spend time thinking about the design.  
-The buttons & LEDs could prob be combined into some kind of block?
+The block under "Main" says LEDs.  Sorry, I figured I could either spend my time learning block diagram tools, or spend time thinking about the design.  The buttons & LEDs could prob be combined into some kind of block?
 ![IMG_3443](https://user-images.githubusercontent.com/17057481/160228310-fdd795b8-6fc1-40a2-85b6-5e5c1a4e6274.jpg)
 
 ## Layered Diagram:
