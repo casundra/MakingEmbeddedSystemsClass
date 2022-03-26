@@ -17,6 +17,7 @@ I intend to use the RP2040 because I want to learn about!  However, I've never w
 ![IMG_3444](https://user-images.githubusercontent.com/17057481/160228239-2e8dcb3e-644d-45e8-98a4-8ff2ddd1aa3b.jpg)
 
 ## Hierarchy of Control:
+The block under "Main" says LEDs.  Sorry, I figured I could either spend my time learning block diagram tools, or spend time thinking about the design.  
 The buttons & LEDs could prob be combined into some kind of block?
 ![IMG_3443](https://user-images.githubusercontent.com/17057481/160228310-fdd795b8-6fc1-40a2-85b6-5e5c1a4e6274.jpg)
 
