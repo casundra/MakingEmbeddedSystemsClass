@@ -24,3 +24,4 @@ Ok, so maybe I cheated on this one, but the [user manual](https://www.st.com/res
 ![image](https://user-images.githubusercontent.com/17057481/161195546-d42627db-ae8f-4083-8417-090988052541.png)
 
 ### RASPBERRY PI PICO
+Note that the Programmable I/O interface provides great flexibility in being able to implement several comms interfaces simultaneously, see also the pinout diagram.
