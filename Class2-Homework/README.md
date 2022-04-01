@@ -6,7 +6,7 @@ The STM32L496AG packs a powerful punch with a veritably INSAAAAANE host of speci
 
 |                    |STM32L496GDISCOVERY |RASPBERRY PI PICO |
 |--------------------|--------------------|------------------|
-|Datasheets | [Board](https://www.st.com/content/ccc/resource/technical/document/data_brief/group1/8b/5b/a6/24/98/8b/49/2f/DM00353124/files/DM00353124.pdf/jcr:content/translations/en.DM00353124.pdf) [Processor](https://www.st.com/resource/en/datasheet/stm32l496ag.pdf)| [Board](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf) [Processor](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
+|Datasheets | [Board](https://www.st.com/resource/en/user_manual/um2160-discovery-kit-with-stm32l496ag-mcu-stmicroelectronics.pdf) [Processor](https://www.st.com/resource/en/datasheet/stm32l496ag.pdf)| [Board](https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf) [Processor](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
 |Processor | STM32L496AG ARM Cortex-M4, 32-bits, 80 MHz MCU + FPU (floating-point unit)| Dual core ARM Cortex-M0, 32-bits, 133 MHz,  |
 |Flash and RAM| 512K or 1MB flash, 320K RAM | No on-board flash, supports up to 16M off-board, 246K RAM |
 |Special Peripherals| CAN, USB, SDMMC, audio (SAI), IR LED interface (IRTIM), digital camera interface (DCMI)| 8 Programmable I/O, USB, 16 PWM, QSPI|
@@ -17,3 +17,9 @@ The STM32L496AG packs a powerful punch with a veritably INSAAAAANE host of speci
 |Board Cost | $75 | $4 |
 |Processor Cost |$12-$14 in 100 | $1.00 in 100 + $0.50 for flash|
 |Processor Stock | Ha! [Quest](https://www.questcomp.com/part/4/stm32l496agi6p/434132810) maybe, but doubtful in reality | Everywhere! (Digi, Newark, Mouser, RPi Direct) |
+
+## Block Diagrams
+### STM32L496GDISCO
+Ok, so maybe I cheated on this one, but the [user manual](https://www.st.com/resource/en/user_manual/um2160-discovery-kit-with-stm32l496ag-mcu-stmicroelectronics.pdf) had such a nice hardware diagram that I didn't see the need to reinvent the wheel.  I would have noted the interfaces on the connection lines instead of blocks within the processor, and I would have added some text about amount of flash & RAM onboard the processor inside of it.  Also I would have noted that MFX = multi-functional expander being used to expand an I2C bus, and CTP = touch peripheral.
+
+### RASPBERRY PI PICO
