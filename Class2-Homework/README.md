@@ -10,9 +10,9 @@ The STM32L496AG packs a powerful punch with a veritably INSAAAAANE host of speci
 |Processor | STM32L496AG ARM Cortex-M4, 32-bits, 80 MHz MCU + FPU (floating-point unit)| Dual core ARM Cortex-M0, 32-bits, 133 MHz,  |
 |Flash and RAM| 512K or 1MB flash, 320K RAM | No on-board flash, supports up to 16M off-board, 246K RAM |
 |Special Peripherals| CAN, USB, SDMMC, audio (SAI), IR LED interface (IRTIM), digital camera interface (DCMI)| 8 Programmable I/O, USB, 16 PWM, QSPI|
-|Interesting Features| digital sigma-delta filters, graphics accelerator, touch sense controller, LCD controller, true random number generator|"integer dividing peripheral"|
+|Other Interesting Features| digital sigma-delta filters, graphics accelerator, touch sense controller, LCD controller, true random number generator|integer dividing peripheral, PIO is incredibly flexible (can be used for VGA video) |
 |ADC Features | special sigma-delta periph, normal SAR ADC is 12-bit, 5.33 Msps, 24 ch, single & diff, AVref pin, 5 internal | SAR ADC is 12-bit, 500Ksps, 4 ch, single-ended only, no ext ref pin, 1 internal |
-|App Note | [Vocoder implementation](https://www.st.com/resource/en/application_note/an4229-how-to-implement-a-vocoder-solution-using-stm32-microcontrollers-stmicroelectronics.pdf) | [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)|
+|App Note | [Vocoder implementation](https://www.st.com/resource/en/application_note/an4229-how-to-implement-a-vocoder-solution-using-stm32-microcontrollers-stmicroelectronics.pdf) (so many good software diagrams!)| [Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf) (tons of practical board layout tips)|
 |Package | BGA only noooooooooooo | Friendly 7x7 QFN |
 |Board Cost | $75 | $4 |
 |Processor Cost |$12-$14 in 100 | $1.00 in 100 + $0.50 for flash|
