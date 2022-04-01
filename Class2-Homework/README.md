@@ -21,5 +21,6 @@ The STM32L496AG packs a powerful punch with a veritably INSAAAAANE host of speci
 ## Block Diagrams
 ### STM32L496GDISCO
 Ok, so maybe I cheated on this one, but the [user manual](https://www.st.com/resource/en/user_manual/um2160-discovery-kit-with-stm32l496ag-mcu-stmicroelectronics.pdf) had such a nice hardware diagram that I didn't see the need to reinvent the wheel.  I would have noted the interfaces on the connection lines instead of blocks within the processor, and I would have added some text about amount of flash & RAM onboard the processor inside of it.  Also I would have noted that MFX = multi-functional expander being used to expand an I2C bus, and CTP = touch peripheral.
+![image](https://user-images.githubusercontent.com/17057481/161195546-d42627db-ae8f-4083-8417-090988052541.png)
 
 ### RASPBERRY PI PICO
