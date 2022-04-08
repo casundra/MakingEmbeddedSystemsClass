@@ -25,6 +25,6 @@ Under Platformio -> Project Tasks there was a folder specific to the board (disc
   
   Changed #defines for my board's LED pin and port (clock enable too!)
   
-  It works!
+  It works!  Video for proof: https://twitter.com/frivolous_circs/status/1512286929315786752?s=20&t=B2kxVPiHh3lQq1pNqd9zMw
 
  STM32F429 DISCOVERY kit has LEDs on LD3 (orange) PG13 and LD4 (green) PG14
