@@ -5,7 +5,7 @@
 //  platformio.ini file.  Seemed to work?
 // I used the STM32Cube framework.
 // example code found here: https://github.com/platformio/platform-ststm32/blob/master/examples/stm32cube-hal-blink/src/main.c
-// more example code (not used) and really nice instructions for compiling: https://stm32-base.org/guides/platformio.html
+// more example code (actually used) and really nice instructions for compiling: https://stm32-base.org/guides/platformio.html
 // ah-ha!  Platformio installs HAL drivers in (username)/.platformio\packages\framework-stm32cubef4\Drivers\STM32F4xx_HAL_Driver
 // 
 // Under Platformio -> Project Tasks there was a folder specific to the board (disco_f429zi)
