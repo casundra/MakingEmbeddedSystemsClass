@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "STM32F429DISCO-Blinky"
+		},
+		{
+			"name": "RpiPico-Blinky",
+			"path": "RpiPico-Blinky"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stm32f4xx_hal.h": "c"
+		}
+	}
+}
