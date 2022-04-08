@@ -1,4 +1,4 @@
-# Blinky on Raspberry Pi Pico with PlatoformIO
+# Blinky on Raspberry Pi Pico with PlatformIO
 Example code grabbed from https://github.com/platformio/platform-raspberrypi/blob/master/examples/arduino-blink/src/main.cpp
 
 Where are the HAL source files for direct register access?
