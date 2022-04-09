@@ -1,4 +1,4 @@
-#Class 3 Homework - Blinky, Button, & Debouncing!
+# Class 3 Homework - Blinky, Button, & Debouncing!
 
 I only did the initial blinky in the STM32, the rest I did with the RPi Pico.
 
