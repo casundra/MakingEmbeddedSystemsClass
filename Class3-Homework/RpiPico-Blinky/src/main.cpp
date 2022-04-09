@@ -10,17 +10,25 @@
 // To get back in bootloader/UF2 mode, unplug and replug while pressing BOOTSEL button.
 
 #include <Arduino.h>
+#include <hardware/gpio.h>
+
+#define LED_PIN   25    // looked @ schematic, this is the built-in LED
 
 // the setup routine runs once when you press reset:
 void setup() {
   // initialize the digital pin as an output.
-  pinMode(LED_BUILTIN, OUTPUT);
+  //pinMode(LED_BUILTIN, OUTPUT);
+  _gpio_init(LED_PIN);
+  gpio_set_dir(LED_PIN, GPIO_OUT);
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);               // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);               // wait for a second
+  // digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  // delay(1000);               // wait for a second
+  // digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  // delay(1000);               // wait for a second
+
+  gpio_xor_mask(1 << LED_PIN);
+  delay(250);
 }
