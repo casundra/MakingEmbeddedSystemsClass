@@ -14,6 +14,12 @@
 
 #define LED_PIN   25    // looked @ schematic, this is the built-in LED
 #define BUTT_PIN  1
+#define BUTT_IRQ  9
+
+
+void irq_butt (uint gpio, uint32_t events) {
+  gpio_xor_mask(1 << LED_PIN);
+}
 
 // the setup routine runs once when you press reset:
 void setup() {
@@ -23,14 +29,16 @@ void setup() {
   _gpio_init(BUTT_PIN);
   gpio_set_dir(BUTT_PIN, GPIO_IN);
   gpio_pull_up(BUTT_PIN);
+  gpio_set_irq_enabled_with_callback(BUTT_PIN, GPIO_IRQ_EDGE_FALL, 1, &irq_butt);
+
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
 
-  // gpio_xor_mask(1 << LED_PIN);
+  // gpio_xor_mask(1 << LED_PIN);   // toggles LED
   // delay(250);
 
-  while (!gpio_get(BUTT_PIN)) gpio_put(LED_PIN, HIGH);
-  gpio_put(LED_PIN, LOW);
+  // while (!gpio_get(BUTT_PIN)) gpio_put(LED_PIN, HIGH);
+  // gpio_put(LED_PIN, LOW);
 }
