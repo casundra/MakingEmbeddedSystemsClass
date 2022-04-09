@@ -14,11 +14,16 @@
 
 #define LED_PIN   25    // looked @ schematic, this is the built-in LED
 #define BUTT_PIN  1
-#define BUTT_IRQ  9
+#define DEBOUNCE_TIME 200
 
+volatile uint32_t buttTime = 0;
+volatile uint8_t buttPressed = 0;
 
 void irq_butt (uint gpio, uint32_t events) {
-  gpio_xor_mask(1 << LED_PIN);
+  if (!buttPressed) {
+    buttTime = millis();
+    buttPressed = 1;
+  }
 }
 
 // the setup routine runs once when you press reset:
@@ -36,7 +41,11 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
 
-  // gpio_xor_mask(1 << LED_PIN);   // toggles LED
+  if (buttPressed && (millis() - buttTime > DEBOUNCE_TIME)){
+    gpio_xor_mask(1 << LED_PIN);   // toggles LED
+    buttPressed = 0;
+  }
+ 
   // delay(250);
 
   // while (!gpio_get(BUTT_PIN)) gpio_put(LED_PIN, HIGH);
