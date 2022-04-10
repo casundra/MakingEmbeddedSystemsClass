@@ -2,7 +2,7 @@
 
 This basically installs the Raspberry Pi SDK as the only dependency in PlatformIO.  I think it's more or less equivalent to using VSCode with the SDK without PlatformIO?  I'm still figuring out this toolchain, it's new to me.
 
-Followed tutorial here, except that the deafult main.c is already set up for Blinky  
+Followed tutorial here, except that the default main.c is already set up for Blinky  
 https://dev.to/admantium/raspberry-pico-the-simple-startup-with-platformio-5451
 
 Using WizIO plaform (advanced installation) here:  
