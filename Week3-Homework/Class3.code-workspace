@@ -6,6 +6,10 @@
 		{
 			"name": "RpiPico-Blinky",
 			"path": "RpiPico-Blinky"
+		},
+		{
+			"name": "RpiPico-Wizio",
+			"path": "RpiPico-Wizio"
 		}
 	],
 	"settings": {
