@@ -1,16 +1,18 @@
 # The palLED (working title) Diagrams & State Machine
 
-For my final project, I want to create a tool that helps people pick LED colors using various color theory principals.  I think the ability to visualize various schemes using addressable LEDs and get the corresponding color data that details the main colors plus variables needed to implement in between colors could be really useful to anyone wanting to generate specific colors with LEDs.  The working name for this is the palLED - like "palette" but it's also a helpful friend (pal) for LEDs.
+For my final project, I want to create a tool that helps people pick LED colors using various color theory principals.  I think the ability to visualize various schemes using addressable LEDs and get the corresponding color data that details the main colors plus variables needed to implement in between colors could be really useful to anyone wanting to generate specific colors or color schemes with LEDs.  The working name for this is the palLED - like "palette" but it's also a helpful friend (pal) for LEDs.
 
 ## Color Schemes
-[Colorpedia](https://paletton.com/wiki/index3c21.html?title=Color_schemes) has nice explanations of color schemes, showing examples in color-block format which is similar to what I want to do with the main strip of LEDs (which may turn into a matrix).  The below images are from Colorpedia.
+[Colorpedia](https://paletton.com/wiki/index3c21.html?title=Color_schemes) has nice explanations of color schemes, showing examples in color-block format which is similar to what I want to do with the main strip of LEDs (which may turn into a matrix).  The below images are from Colorpedia.  Note the swatch examples do not correspond to the colors indicated on the wheel, the wheel is just provided to get a visual of the angles.
 
 ### Monochromatic
-In LED speak, this is basically varying brightnesses of a single color.
+In LED speak, this is basically varying brightnesses of a single color.  
 
 ![monochrome color wheel](https://paletton.com/wiki/images/9/9d/Mono.png)
 
 ![monochromatic color scheme](https://paletton.com/wiki/images/8/82/Model-mono-ex02.png)
+
+When RANGE is referred to in the State Table, it's the range of monochromatic shades you see above.
 
 ### Complementary
 The color directly opposite the base color on the color wheel.
@@ -20,7 +22,7 @@ The color directly opposite the base color on the color wheel.
 ![complementary color scheme](https://paletton.com/wiki/images/5/5b/Model-compl-ex02.png)
 
 ### Split Complementary
-Two colors at even angles to either side of the complementary color on the color wheel.  This is the term used to describe angles under 60 from complementary. 
+Two colors at even angles to either side of the complementary color on the color wheel.  This is the term used to describe angles under 60 from complementary.  When ANGLE is referred to in the state machine, it's this angle from the complement.
 
 ![split complementary color wheel](https://paletton.com/wiki/images/4/41/Split.png)
 
