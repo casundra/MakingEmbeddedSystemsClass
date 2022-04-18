@@ -2,6 +2,11 @@
 
 For my final project, I want to create a tool that helps people pick LED colors using various color theory principals.  I think the ability to visualize various schemes using addressable LEDs and get the corresponding color data that details the main colors plus variables needed to implement in between colors could be really useful to anyone wanting to generate specific colors or color schemes with LEDs.  The working name for this is the palLED - like "palette" but it's also a helpful friend (pal) for LEDs.
 
+## General Idea
+This is going to be a box with an LCD, 4 knobs, 2 buttons, an addressable LED strip, an addressable LED ring, and possibly an addressable LED matrix and auxiliary LED strip connector, and possibly 4 analog RGB LEDs.  The "possibly" parts are nice-to-haves - it would be cool to compare various types of LEDs and strips, but that might be too much scope for the final project.  The analog RGB LEDs would have to be driven from an external I2C chip since there isn't enough Timer I/O for the minimum of 12 PWMs needed plus the knobs, which are encoders.  The knobs will be used to adjust the color and color parameters of all LEDs according to mode, so they need to be insensitive to absolute position since their function changes between moddes.  The LCD will output basic information about the base color and spacing of other colors from the main color, and output Settings in settings mode.  A USB port will provide power, and the ability to adjust settings and output verbose LED data via serial terminal.
+
+![IMG_3637](https://user-images.githubusercontent.com/17057481/163748672-cb595b24-7bd1-4997-bd8f-5a66834cb5ba.jpg)
+
 ## Color Schemes
 [Colorpedia](https://paletton.com/wiki/index3c21.html?title=Color_schemes) has nice explanations of color schemes, showing examples in color-block format which is similar to what I want to do with the main strip of LEDs (which may turn into a matrix).  The below images are from Colorpedia.  Note the swatch examples do not correspond to the colors indicated on the wheel, the wheel is just provided to get a visual of the angles.
 
