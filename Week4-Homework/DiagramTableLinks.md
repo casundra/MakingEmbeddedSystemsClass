@@ -22,6 +22,8 @@ https://drive.google.com/file/d/1dcPcOV0l-tbXaEjJHNsCvHzCtZ3qQw2H/view?usp=shari
 
 ## Hierarchy of Control Diagram
 
-
+https://drive.google.com/file/d/1ONasmLz_ryK4zMEIZnZG0bDXbSG1v4vz/view?usp=sharing
 
 ## Layered Diagram
+
+https://drive.google.com/file/d/1kZqxeiLaX0DyIM_CJKGQ4zlfmmEzBUe0/view?usp=sharing
