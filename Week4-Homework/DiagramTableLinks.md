@@ -1,5 +1,7 @@
 # Block Diagram and State Machine Table Links
 
+See also the README for handy visuals describing the different color themes.
+
 ## State Machine Table
 
 Current Version:
