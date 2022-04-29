@@ -45,6 +45,16 @@ int main() {
 	{
 		ConsoleProcess();
 
+		uint8_t buffer;
+		uint32_t bufferLength = sizeof(buffer);
+		uint32_t readLength = 0;
+
+		while (uart_is_readable(uart0)) 
+		{
+			uint8_t ch = uart_getc(uart0);
+			uart_putc(uart0, ch); // echo
+		}
+
 		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
 			gpio_xor_mask(1 << LED_PIN);
 			lastBlink = get_absolute_time();
@@ -53,7 +63,7 @@ int main() {
 
 		if ( get_absolute_time() - lastWrite > BLINK_TIME*10 ) {
 			lastWrite = get_absolute_time();
-			ConsoleIoSendString("blink\n");
+			ConsoleSendString("blink\n");
 
 		}
 
