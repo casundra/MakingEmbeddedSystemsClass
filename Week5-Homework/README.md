@@ -1,0 +1,3 @@
+# Week 5 Homework - Adding a CLI
+
+Hey, I cheated, imagine that!  In my defense, I will say it was just fortuitous that Elecia happened to create her example code for the Raspberry Pi Pico, my processor of choice for my final project.  If I were a super cool student, I would totally port it to some other platform like maybe the SAMD21 since I have a bit of experience with that one.  Time permitting I will, but for now, I'm just gonna take her code, run with it, and add my 3 more functions.
