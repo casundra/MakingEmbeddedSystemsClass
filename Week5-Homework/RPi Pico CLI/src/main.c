@@ -24,16 +24,39 @@
 ** to add the command.
 *************************************************/
 #include <stdio.h>
+//#include <hardware/gpio.h>
 #include "pico/stdlib.h"
 #include "console.h"
 
+#define LED_PIN	25
+#define BLINK_TIME	500000	// microseconds
+
 int main() {
   stdio_init_all(); // UART setup for both input and output
+  gpio_init(LED_PIN);
+  gpio_set_dir(LED_PIN, GPIO_OUT);
+  sleep_ms(500);
   ConsoleInit();
+
+  absolute_time_t lastBlink = 0;
+  absolute_time_t lastWrite = 0;
 
 	while(1) 
 	{
 		ConsoleProcess();
-    sleep_ms(2); 
+
+		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
+			gpio_xor_mask(1 << LED_PIN);
+			lastBlink = get_absolute_time();
+
+		}
+
+		if ( get_absolute_time() - lastWrite > BLINK_TIME*10 ) {
+			lastWrite = get_absolute_time();
+			ConsoleIoSendString("blink\n");
+
+		}
+
+    	sleep_ms(100); 
 	}	
 }
