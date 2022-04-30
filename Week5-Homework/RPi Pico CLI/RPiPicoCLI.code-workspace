@@ -7,7 +7,9 @@
 	],
 	"settings": {
 		"files.associations": {
-			"stdio.h": "c"
+			"stdio.h": "c",
+			"stdlib.h": "c",
+			"stdio_usb.h": "c"
 		}
 	}
 }

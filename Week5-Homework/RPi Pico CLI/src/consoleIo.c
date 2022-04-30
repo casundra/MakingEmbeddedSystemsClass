@@ -15,15 +15,30 @@ eConsoleError ConsoleIoInit(void)
 // wasn't called fast enough?
 eConsoleError ConsoleIoReceive(uint8_t *buffer, const uint32_t bufferLength, uint32_t *readLength)
 {
-	uint32_t i = 0;
-	char ch;
+	// original code
+	// uint32_t i = 0;
+	// char ch;
 
-	while (uart_is_readable(uart0)) 
+	// while (uart_is_readable(uart0)) 
+	// {
+  	// 	ch = uart_getc(uart0);
+  	// 	uart_putc(uart0, ch); // echo
+	// 	buffer[i] = (uint8_t) ch;
+	// 	i++;
+	// }
+
+	// *readLength = i;
+	// return CONSOLE_SUCCESS;
+
+	uint32_t i = 0;
+	int ch = getchar_timeout_us(0);
+
+	while ((ch != PICO_ERROR_TIMEOUT) && (ch != EOF) && (i < bufferLength)) 
 	{
-  		ch = uart_getc(uart0);
-  		uart_putc(uart0, ch); // echo
+  		putchar(ch); // echo
 		buffer[i] = (uint8_t) ch;
 		i++;
+		ch = getchar_timeout_us(0);
 	}
 
 	*readLength = i;

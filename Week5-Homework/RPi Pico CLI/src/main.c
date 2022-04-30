@@ -32,12 +32,9 @@
 
 int main() {
 	stdio_init_all(); // UART setup for both input and output
-	// uart_init(uart0, 115200);
-	// gpio_set_function(0, GPIO_FUNC_UART);
-    // gpio_set_function(1, GPIO_FUNC_UART);
 	gpio_init(LED_PIN);
 	gpio_set_dir(LED_PIN, GPIO_OUT);
-	sleep_ms(500);
+	sleep_ms(2000);
 	ConsoleInit();
 
 	absolute_time_t lastBlink = 0;
@@ -46,31 +43,12 @@ int main() {
 	while(1) 
 	{
 		// does not work
-		//ConsoleProcess();
-
-		// // does not work
-		// while (uart_is_readable(uart0)) 
-		// {
-		// 	uint8_t ch = uart_getc(uart0);
-		// 	uart_putc(uart0, ch); // echo
-		// }
-
-		// This works!  Blocking fixed with getchar_timeout_us, thank you Erin!!!!
-		int ch = 0;
-		ch = getchar_timeout_us(0);
-		if (ch != PICO_ERROR_TIMEOUT) putchar((char) ch);
+		ConsoleProcess();
 
 		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
 			gpio_xor_mask(1 << LED_PIN);
 			lastBlink = get_absolute_time();
 		}
-
-		// // this totally works
-		// if ( get_absolute_time() - lastWrite > BLINK_TIME*10 ) {
-		// 	lastWrite = get_absolute_time();
-		// 	ConsoleSendString("blink\n");
-
-		// }
 
     	sleep_ms(2); 
 	}	
