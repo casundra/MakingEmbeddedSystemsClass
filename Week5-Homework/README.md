@@ -5,3 +5,5 @@ OK, so I thought I was going to be able to cheat on this and just use the Pico c
 I was sort of able to get getchar and putchar to work, but it weirdly blocked my LED blinking.
 
 ConsoleProcess() and uart_getc did not work.
+
+Also, I already did the bonus last week which was creating Chapter 2 diagrams for my final project.  They're in the Week 4 folder.
