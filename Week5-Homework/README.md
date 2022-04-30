@@ -1,3 +1,7 @@
 # Week 5 Homework - Adding a CLI
 
-Hey, I cheated, imagine that!  In my defense, I will say it was just fortuitous that Elecia happened to create her example code for the Raspberry Pi Pico, my processor of choice for my final project.  If I were a super cool student, I would totally port it to some other platform like maybe the SAMD21 since I have a bit of experience with that one.  Time permitting I will, but for now, I'm just gonna take her code, run with it, and add my 3 more functions.
+OK, so I thought I was going to be able to cheat on this and just use the Pico code as-is, but apparently not?  Serial data transmitting / writing is working fine, but reading is not working.  Not quite sure what to make of it.
+
+I was sort of able to get getchar and putchar to work, but it weirdly blocked my LED blinking.
+
+ConsoleProcess() and uart_getc did not work.
