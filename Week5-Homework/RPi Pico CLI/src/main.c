@@ -32,6 +32,9 @@
 
 int main() {
 	stdio_init_all(); // UART setup for both input and output
+	// uart_init(uart0, 115200);
+	// gpio_set_function(0, GPIO_FUNC_UART);
+    // gpio_set_function(1, GPIO_FUNC_UART);
 	gpio_init(LED_PIN);
 	gpio_set_dir(LED_PIN, GPIO_OUT);
 	sleep_ms(500);
@@ -43,7 +46,7 @@ int main() {
 	while(1) 
 	{
 		// does not work
-		ConsoleProcess();
+		//ConsoleProcess();
 
 		// // does not work
 		// while (uart_is_readable(uart0)) 
@@ -52,10 +55,10 @@ int main() {
 		// 	uart_putc(uart0, ch); // echo
 		// }
 
-		// // this works, sort of.  Echoes but LED doesn't blink
-		// char ch = 0;
-		// ch = getchar();
-		// putchar(ch);
+		// This works!  Blocking fixed with getchar_timeout_us, thank you Erin!!!!
+		int ch = 0;
+		ch = getchar_timeout_us(0);
+		if (ch != PICO_ERROR_TIMEOUT) putchar((char) ch);
 
 		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
 			gpio_xor_mask(1 << LED_PIN);
