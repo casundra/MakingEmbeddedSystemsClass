@@ -11,6 +11,7 @@
 #include "console.h"
 #include "consoleIo.h"
 #include "version.h"
+#include "data.h"
 
 #define IGNORE_UNUSED_VARIABLE(x)     if ( &x == &x ) {}
 
@@ -18,7 +19,9 @@ static eCommandResult_T ConsoleCommandComment(const char buffer[]);
 static eCommandResult_T ConsoleCommandVer(const char buffer[]);
 static eCommandResult_T ConsoleCommandHelp(const char buffer[]);
 static eCommandResult_T ConsoleCommandParamExampleInt16(const char buffer[]);
+static eCommandResult_T ConsoleCommandParamExampleUint8(const char buffer []);
 static eCommandResult_T ConsoleCommandParamExampleHexUint16(const char buffer[]);
+static eCommandResult_T ConsoleCommandData(const char buffer[]);
 
 static const sConsoleCommandTable_T mConsoleCommandTable[] =
 {
@@ -26,7 +29,9 @@ static const sConsoleCommandTable_T mConsoleCommandTable[] =
     {"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
     {"ver", &ConsoleCommandVer, HELP("Get the version string")},
     {"int", &ConsoleCommandParamExampleInt16, HELP("How to get a signed int16 from params list: int -321")},
+		{"uint8", &ConsoleCommandParamExampleUint8, HELP("How to get an unsigned uint8 from params list: uint8 123")},
     {"u16h", &ConsoleCommandParamExampleHexUint16, HELP("How to get a hex u16 from the params list: u16h aB12")},
+		{"data", &ConsoleCommandData, HELP("Dumps some RGB data")},
 
 	CONSOLE_COMMAND_TABLE_END // must be LAST
 };
@@ -75,6 +80,24 @@ static eCommandResult_T ConsoleCommandParamExampleInt16(const char buffer[])
 	}
 	return result;
 }
+
+static eCommandResult_T ConsoleCommandParamExampleUint8(const char buffer[])
+{
+	uint8_t parameterUint;
+	eCommandResult_T result;
+	result = ConsoleReceiveParamUint8(buffer, 1, &parameterUint);
+	if ( COMMAND_SUCCESS == result )
+	{
+		ConsoleIoSendString("Parameter is ");
+		ConsoleSendParamUint8(parameterUint);
+		ConsoleIoSendString(" (0x");
+		ConsoleSendParamHexUint8((uint8_t) parameterUint);
+		ConsoleIoSendString(")");
+		ConsoleIoSendString(STR_ENDLINE);
+	}
+	return result;
+}
+
 static eCommandResult_T ConsoleCommandParamExampleHexUint16(const char buffer[])
 {
 	uint16_t parameterUint16;
@@ -100,6 +123,30 @@ static eCommandResult_T ConsoleCommandVer(const char buffer[])
 	return result;
 }
 
+static eCommandResult_T ConsoleCommandData(const char buffer[])
+{
+	eCommandResult_T result = COMMAND_SUCCESS;
+
+	uint8_t dataRowLength = sizeof (rgbHeader) / sizeof (rgbHeader[0]);
+	for (uint8_t i = 0; i < dataRowLength; i++) {
+		ConsoleIoSendString(rgbHeader[i]);
+		ConsoleIoSendString("\t");
+	}
+	ConsoleIoSendString(STR_ENDLINE);	
+
+	uint8_t dataTableLength = sizeof (rgb) / sizeof (rgb[0]);
+	for (uint8_t i = 0; i < dataTableLength; i++) {
+		for (uint8_t j = 0; j < dataRowLength; j++){
+			ConsoleSendParamUint8(rgb[i][j]);
+			ConsoleIoSendString("\t");
+		}
+		ConsoleIoSendString(STR_ENDLINE);	
+	}
+	ConsoleIoSendString("...and that's all, folks!");
+	ConsoleIoSendString(STR_ENDLINE);	
+
+	return result;
+}
 
 const sConsoleCommandTable_T* ConsoleCommandsGetTable(void)
 {

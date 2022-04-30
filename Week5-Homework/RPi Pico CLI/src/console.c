@@ -15,6 +15,7 @@
 #endif
 
 #define NOT_FOUND		-1
+#define UINT8_MAX_STR_LENGTH 5
 #define INT16_MAX_STR_LENGTH 8 // -65534: six characters plus a two NULLs
 #define INT32_MAX_STR_LENGTH 16
 #define NULL_CHAR            '\0'
@@ -255,6 +256,42 @@ eCommandResult_T ConsoleReceiveParamInt16(const char * buffer, const uint8_t par
 	return result;
 }
 
+// ConsoleReceiveParamUint8
+// Identify and obtain a parameter of type uint8_t, sent in in decimal
+// Note that this uses atoi, a somewhat costly function. You may want to replace it, see ConsoleReceiveParamHexUint16
+// for some ideas on how to do that.
+eCommandResult_T ConsoleReceiveParamUint8(const char * buffer, const uint8_t parameterNumber, uint8_t* parameterInt)
+{
+	uint32_t startIndex = 0;
+	uint32_t i;
+	eCommandResult_T result;
+	char charVal;
+	char str[UINT8_MAX_STR_LENGTH];
+
+	result = ConsoleParamFindN(buffer, parameterNumber, &startIndex);
+
+	i = 0;
+	charVal = buffer[startIndex + i];
+	while ( ( LF_CHAR != charVal ) && ( CR_CHAR != charVal )
+			&& ( PARAMETER_SEPARATER != charVal )
+		&& ( i < UINT8_MAX_STR_LENGTH ) )
+	{
+		str[i] = charVal;					// copy the relevant part
+		i++;
+		charVal = buffer[startIndex + i];
+	}
+	if ( i == UINT8_MAX_STR_LENGTH)
+	{
+		result = COMMAND_PARAMETER_ERROR;
+	}
+	if ( COMMAND_SUCCESS == result )
+	{
+		str[i] = NULL_CHAR;
+		*parameterInt = atoi(str);
+	}
+	return result;
+}
+
 // ConsoleReceiveParamHexUint16
 // Identify and obtain a parameter of type uint16, sent in as hex. This parses the number and does not use
 // a library function to do it.
@@ -375,6 +412,20 @@ static void smallItoa(int in, char* outBuffer, int radix)
 	}
 }
 #endif
+
+// ConsoleSendParamUint8
+// Send a parameter of type uint8_t using the (unsafe) C library function
+// itoa to translate from integer to string.
+eCommandResult_T ConsoleSendParamUint8(uint8_t parameterInt)
+{
+	char out[UINT8_MAX_STR_LENGTH];
+//	memset(out, 0, INT16_MAX_STR_LENGTH);
+
+	itoa (parameterInt, out, 10);
+	ConsoleIoSendString(out);
+
+	return COMMAND_SUCCESS;
+}
 
 // ConsoleSendParamInt16
 // Send a parameter of type int16 using the (unsafe) C library function
