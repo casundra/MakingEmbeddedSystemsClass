@@ -31,14 +31,14 @@
 #define BLINK_TIME	500000	// microseconds
 
 int main() {
-  stdio_init_all(); // UART setup for both input and output
-  gpio_init(LED_PIN);
-  gpio_set_dir(LED_PIN, GPIO_OUT);
-  sleep_ms(500);
-  ConsoleInit();
+	stdio_init_all(); // UART setup for both input and output
+	gpio_init(LED_PIN);
+	gpio_set_dir(LED_PIN, GPIO_OUT);
+	sleep_ms(500);
+	ConsoleInit();
 
-  absolute_time_t lastBlink = 0;
-  absolute_time_t lastWrite = 0;
+	absolute_time_t lastBlink = 0;
+	absolute_time_t lastWrite = 0;
 
 	while(1) 
 	{
@@ -62,6 +62,7 @@ int main() {
 			lastBlink = get_absolute_time();
 		}
 
+		// // this totally works
 		// if ( get_absolute_time() - lastWrite > BLINK_TIME*10 ) {
 		// 	lastWrite = get_absolute_time();
 		// 	ConsoleSendString("blink\n");
