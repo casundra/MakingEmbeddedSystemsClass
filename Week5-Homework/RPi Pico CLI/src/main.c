@@ -24,7 +24,6 @@
 ** to add the command.
 *************************************************/
 #include <stdio.h>
-//#include <hardware/gpio.h>
 #include "pico/stdlib.h"
 #include "console.h"
 
@@ -43,8 +42,8 @@ int main() {
 
 	while(1) 
 	{
-		// // does not work
-		// ConsoleProcess();
+		// does not work
+		ConsoleProcess();
 
 		// // does not work
 		// while (uart_is_readable(uart0)) 

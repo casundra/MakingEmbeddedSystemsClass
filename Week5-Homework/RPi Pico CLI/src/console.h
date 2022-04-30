@@ -10,7 +10,7 @@
 // User configuration
 #define CONSOLE_PROMPT			("> ")
 #define PARAMETER_SEPARATER		(' ')
-#define STR_ENDLINE 			"\r\n"
+#define STR_ENDLINE 			("\r\n")
 
 // The C library itoa is sometimes a complicated function and the library costs aren't worth it
 // so this is implements the parts of the function needed for console.

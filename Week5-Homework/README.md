@@ -6,4 +6,6 @@ I was sort of able to get getchar and putchar to work, but it weirdly blocked my
 
 ConsoleProcess() and uart_getc did not work.
 
+Added extra commands via the Wokwi simulator.  That was cool!
+
 Also, I already did the bonus last week which was creating Chapter 2 diagrams for my final project.  They're in the Week 4 folder.
