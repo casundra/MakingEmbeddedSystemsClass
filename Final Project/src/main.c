@@ -10,7 +10,7 @@
 
 volatile uint8_t dir = CW;
 
-void gpio_callback(uint gpio, uint32_t events) {
+void isr_gpio_callback(uint gpio, uint32_t events) {
 	uint8_t righta = gpio_get(RIGHTA);
 	uint8_t rightb = gpio_get(RIGHTB);
 	if (righta) {
@@ -29,7 +29,7 @@ int main() {
 	stdio_init_all();	// UART and UART to USB setup for both input and output
 	heartbeat_init();
 	encoder_init(RIGHTA, RIGHTB);
-	gpio_set_irq_enabled_with_callback(RIGHTA, GPIO_IRQ_EDGE_RISE, 1, &gpio_callback);
+	gpio_set_irq_enabled_with_callback(RIGHTA, GPIO_IRQ_EDGE_RISE, 1, &isr_gpio_callback);
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
 
