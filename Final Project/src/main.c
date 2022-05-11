@@ -29,16 +29,18 @@
 
 #define LED_PIN	25
 #define BLINK_TIME	1000000	// microseconds
+#define PRINT_TIME	5000000 
 
 int main() {
 	stdio_init_all(); // UART setup for both input and output
 	gpio_init(LED_PIN);
 	gpio_set_dir(LED_PIN, GPIO_OUT);
-	sleep_ms(2000);
+	sleep_ms(3000);
 	ConsoleInit();
 
+
 	absolute_time_t lastBlink = 0;
-	absolute_time_t lastWrite = 0;
+	absolute_time_t lastPrint = 0;
 
 	while(1) 
 	{
@@ -48,7 +50,11 @@ int main() {
 		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
 			gpio_xor_mask(1 << LED_PIN);
 			lastBlink = get_absolute_time();
-            printf("Hello World");
+		}
+
+		if (get_absolute_time() - lastPrint > PRINT_TIME)	{
+			printf("Hello World\n");
+			lastPrint = get_absolute_time();
 		}
 
     	sleep_ms(2); 
