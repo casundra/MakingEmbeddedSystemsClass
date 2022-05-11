@@ -26,10 +26,10 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "console.h"
+#include "pinout.h"
+#include "utils.h"
 
-#define LED_PIN	25
-#define BLINK_TIME	1000000	// microseconds
-#define PRINT_TIME	5000000 
+
 
 int main() {
 	stdio_init_all(); // UART setup for both input and output
@@ -47,15 +47,12 @@ int main() {
 		// does not work
 		ConsoleProcess();
 
-		if ( get_absolute_time() - lastBlink > BLINK_TIME ) {
-			gpio_xor_mask(1 << LED_PIN);
-			lastBlink = get_absolute_time();
-		}
+		heartbeat();
 
-		if (get_absolute_time() - lastPrint > PRINT_TIME)	{
-			printf("Hello World\n");
-			lastPrint = get_absolute_time();
-		}
+		// if (get_absolute_time() - lastPrint > PRINT_TIME)	{
+		// 	printf("Hello World\n");
+		// 	lastPrint = get_absolute_time();
+		// }
 
     	sleep_ms(2); 
 	}	
