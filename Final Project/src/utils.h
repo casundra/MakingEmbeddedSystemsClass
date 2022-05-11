@@ -9,6 +9,7 @@
 #define PRINT_TIME	5000
 
 uint32_t time_ms();
+void heartbeat_init();
 void heartbeat();
 
 

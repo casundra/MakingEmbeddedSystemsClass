@@ -1,59 +1,35 @@
-/*************************************************
-** Command Line Interface
-** This is from https://github.com/eleciawhite/reusable
-** (MIT license)
-**
-** To use it in the simulator, press run 
-**    It should print `Welcome to the Consolinator, your gateway to testing code and hardware`
-** Type 'help' in the white box at the bottom and hit return.
-** It lists the commands it supports.
-**
-** There are several files here:
-** Console.c is a command parser. 
-**    Call the init function during init and
-**    then call the process function on every pass through a loop.
-** You probably don't need to modify this file much.
-**
-** The interface is in consoleIo.c which currently
-** uses the RPi Pico interface. You will need to modify this
-** for your own hardware, connecting it to a UART in your embedded system.
-**
-** The command table and commands are implemented in consoleCommands.c.
-** This is where you add commands, probably by copying one that is 
-** already there. You need to modify mConsoleCommandTable 
-** to add the command.
-*************************************************/
+
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "console.h"
-#include "pinout.h"
-#include "utils.h"
+#include "pinout.h"				// all pin definitions used in various functions are here
+#include "utils.h"				// handy time and heartbeat code
 
 
 
 int main() {
-	stdio_init_all(); // UART setup for both input and output
-	gpio_init(LED_PIN);
-	gpio_set_dir(LED_PIN, GPIO_OUT);
-	sleep_ms(3000);
+	stdio_init_all();	// UART and UART to USB setup for both input and output
+	heartbeat_init();
+	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
 
 
-	absolute_time_t lastBlink = 0;
-	absolute_time_t lastPrint = 0;
+
+
 
 	while(1) 
 	{
-		// does not work
-		ConsoleProcess();
 
-		heartbeat();
 
+		// // Hello World Heartbeat
+		// static absolute_time_t lastPrint = 0;
 		// if (get_absolute_time() - lastPrint > PRINT_TIME)	{
 		// 	printf("Hello World\n");
 		// 	lastPrint = get_absolute_time();
 		// }
 
+		ConsoleProcess();
+		heartbeat();
     	sleep_ms(2); 
 	}	
 }

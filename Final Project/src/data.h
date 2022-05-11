@@ -1,3 +1,12 @@
+// added to the below by Carrie Sundra
+// MIT License
+
+/*************************************************
+** Command Line Interface
+** This is from https://github.com/eleciawhite/reusable
+** (MIT license)
+*************************************************/
+
 #ifndef DATA_H
 #define DATA_H
 

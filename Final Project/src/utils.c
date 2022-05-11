@@ -10,6 +10,10 @@ uint32_t time_ms() {
     return to_ms_since_boot( get_absolute_time() );
 }
 
+void heartbeat_init() {
+	gpio_init(LED_PIN);
+	gpio_set_dir(LED_PIN, GPIO_OUT);
+}
 
 // could probably use Pico built-in alarm/timers to do this
 void heartbeat() {
