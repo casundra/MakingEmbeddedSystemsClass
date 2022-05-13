@@ -12,12 +12,12 @@
 #define LCD_CS      7
 #define LCD_RES     8
 #define LCD_BL      9   // TFT LCD backlight
-#define RIGHTA      10  // Right rotary encoder, quadrature
-#define RIGHTB      11
+#define LEFTA       10  // Left rotary encoder, quadrature
+#define LEFTB       11
 #define MIDDLEA     12  // Middle rotary encoder, quadrature
 #define MIDDLEB     13
-#define LEFTA       14  // Left rotary encoder, quadrature
-#define LEFTB       15
+#define RIGHTA      14  // Right rotary encoder, quadrature
+#define RIGHTB      15
 #define MODE_BUTT   16  // Mode button, momentary
 #define COLOR_BUTT  17  // Color button, momentary
 
