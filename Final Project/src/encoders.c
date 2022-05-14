@@ -20,17 +20,21 @@ void encoder_init(uint phasea, uint phaseb) {
 // phasea and phaseb are the encoder pins
 // counts is a global variable that keeps track of that encoder's relative position
 // dir is a global variable that keeps track of direction
-void encoder_read(uint8_t phasea, uint8_t phaseb, int16_t *counts, uint8_t *dir) {
+void encoder_read(uint8_t phasea, uint8_t phaseb, int16_t counts, uint8_t dir) {
     uint8_t pha = gpio_get(phasea);
     uint8_t phb = gpio_get(phaseb);
     if (pha) {
         if (phb) {
-            *dir = CCW;
-            *counts--;
+            // *dir = CCW;
+            // *counts--;
+            dir = CCW;
+            counts--;
         }
         else {
-            *dir = CW;
-            *counts++;
+            // *dir = CW;
+            // *counts++;
+            dir = CW;
+            counts++;
         }
     }
     // ignores it as bounce if Phase A is low immediately after interrupt fires

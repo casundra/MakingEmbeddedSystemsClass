@@ -15,21 +15,38 @@ volatile int16_t rtCounts = 0;
 volatile int16_t mdCounts = 0;
 volatile int16_t lfCounts = 0;
 
+typedef struct EncoderStruct {
+	const uint8_t phPinA;
+	const uint8_t phPinB;
+	volatile int16_t counts;
+	volatile uint8_t dir;
+} Encoder;
+
+Encoder Right = {RIGHTA, RIGHTB, 0, 2};
+Encoder Middle = {MIDDLEA, MIDDLEB, 0, 2};
+Encoder Left = {LEFTA, LEFTB, 0, 2};
+
+int64_t encoder_debounce_callback(alarm_id_t id, Encoder encoder) {
+	encoder_read(encoder.phPinA, encoder.phPinB, encoder.counts, encoder.dir);
+}
 
 void isr_gpio_callback(uint gpio, uint32_t events) {
 	uint8_t phasea;
 	uint8_t phaseb;
 	switch (gpio) {
 		case RIGHTA: {
-			encoder_read(RIGHTA, RIGHTB, &rtCounts, &rtDir);
+			add_alarm_in_ms(30, encoder_debounce_callback, &Right, 0);
+			//encoder_read(RIGHTA, RIGHTB, &rtCounts, &rtDir);
 			break;
 		}
 		case MIDDLEA: {
-			encoder_read(MIDDLEA, MIDDLEB, &mdCounts, &mdDir);
+			add_alarm_in_ms(30, encoder_debounce_callback, &Middle, 0);
+			//encoder_read(MIDDLEA, MIDDLEB, &mdCounts, &mdDir);
 			break;
 		}
 		case LEFTA: {
-			encoder_read(LEFTA, LEFTB, &lfCounts, &lfDir);
+			add_alarm_in_ms(30, encoder_debounce_callback, &Left, 0);
+			//encoder_read(LEFTA, LEFTB, &lfCounts, &lfDir);
 			break;
 		}
 	}
@@ -51,7 +68,7 @@ int main() {
 
 	while(1) 
 	{
-		if ( (lfDir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
+		if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
 		else gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
 		// // Hello World Heartbeat
