@@ -14,6 +14,9 @@ volatile uint8_t lfDir = 2;
 volatile int16_t rtCounts = 0;
 volatile int16_t mdCounts = 0;
 volatile int16_t lfCounts = 0;
+volatile uint8_t rtdebounce = 0;
+volatile uint8_t mddebounce = 0;
+volatile uint8_t lfdebounce = 0;
 
 typedef struct EncoderStruct {
 	const uint8_t phPinA;
@@ -26,8 +29,11 @@ Encoder Right = {RIGHTA, RIGHTB, 0, 2};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 2};
 Encoder Left = {LEFTA, LEFTB, 0, 2};
 
+// need to add tracking for which phase called, so that can send the correct info and 
+// clear the correct debounce flag.
 int64_t encoder_debounce_callback(alarm_id_t id, Encoder encoder) {
 	encoder_read(encoder.phPinA, encoder.phPinB, encoder.counts, encoder.dir);
+	
 }
 
 void isr_gpio_callback(uint gpio, uint32_t events) {
@@ -35,17 +41,20 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 	uint8_t phaseb;
 	switch (gpio) {
 		case RIGHTA: {
-			add_alarm_in_ms(30, encoder_debounce_callback, &Right, 0);
+			if (!rtdebounce) add_alarm_in_ms(30, encoder_debounce_callback, &Right, 0);
+			rtdebounce = 1;
 			//encoder_read(RIGHTA, RIGHTB, &rtCounts, &rtDir);
 			break;
 		}
 		case MIDDLEA: {
-			add_alarm_in_ms(30, encoder_debounce_callback, &Middle, 0);
+			if (!mddebounce) add_alarm_in_ms(30, encoder_debounce_callback, &Middle, 0);
+			mddebounce = 1;
 			//encoder_read(MIDDLEA, MIDDLEB, &mdCounts, &mdDir);
 			break;
 		}
 		case LEFTA: {
-			add_alarm_in_ms(30, encoder_debounce_callback, &Left, 0);
+			if (!lfdebounce) add_alarm_in_ms(30, encoder_debounce_callback, &Left, 0);
+			lfdebounce = 1;
 			//encoder_read(LEFTA, LEFTB, &lfCounts, &lfDir);
 			break;
 		}
