@@ -8,15 +8,7 @@
 #include "utils.h"				// handy time and heartbeat code
 #include "encoders.h"
 
-volatile uint8_t rtDir = 2;
-volatile uint8_t mdDir = 2;
-volatile uint8_t lfDir = 2;
-volatile int16_t rtCounts = 0;
-volatile int16_t mdCounts = 0;
-volatile int16_t lfCounts = 0;
-volatile uint8_t rtdebounce = 0;
-volatile uint8_t mddebounce = 0;
-volatile uint8_t lfdebounce = 0;
+#define DEBOUNCE_ENC	2	// ms of debounce time
 
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 2};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 2};
@@ -24,8 +16,8 @@ Encoder Left = {LEFTA, LEFTB, 0, 0, 2};
 
 // need to add tracking for which phase called, so that can send the correct info and 
 // clear the correct debounce flag.
-int64_t encoder_debounce_callback(alarm_id_t id, void *user_data) {
-	encoder_read(*(Encoder *)user_data);
+int64_t encoder_debounce_callback(alarm_id_t id, void *encoder) {
+	encoder_read(encoder);
 
 	return 0;
 }
@@ -33,19 +25,19 @@ int64_t encoder_debounce_callback(alarm_id_t id, void *user_data) {
 void isr_gpio_callback(uint gpio, uint32_t events) {
 	switch (gpio) {
 		case RIGHTA: {
-			if (!Right.debounce) add_alarm_in_ms(30, encoder_debounce_callback, &Right, 0);
+			if (!Right.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Right, 0);
 			Right.debounce = 1;
 			//encoder_read(RIGHTA, RIGHTB, &rtCounts, &rtDir);
 			break;
 		}
 		case MIDDLEA: {
-			if (!Middle.debounce) add_alarm_in_ms(30, encoder_debounce_callback, &Middle, 0);
+			if (!Middle.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Middle, 0);
 			Middle.debounce = 1;
 			//encoder_read(MIDDLEA, MIDDLEB, &mdCounts, &mdDir);
 			break;
 		}
 		case LEFTA: {
-			if (!Left.debounce) add_alarm_in_ms(30, encoder_debounce_callback, &Left, 0);
+			if (!Left.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Left, 0);
 			Left.debounce = 1;
 			//encoder_read(LEFTA, LEFTB, &lfCounts, &lfDir);
 			break;
