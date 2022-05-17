@@ -8,42 +8,50 @@
 #include "utils.h"				// handy time and heartbeat code
 #include "encoders.h"
 
-#define DEBOUNCE_ENC	2	// ms of debounce time
+#define DEBOUNCE_ENC	1	// ms of debounce time
 
-Encoder Right = {RIGHTA, RIGHTB, 0, 0, 2};
-Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 2};
-Encoder Left = {LEFTA, LEFTB, 0, 0, 2};
+Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
+Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0};
+Encoder Left = {LEFTA, LEFTB, 0, 0, 0};
 
-// need to add tracking for which phase called, so that can send the correct info and 
-// clear the correct debounce flag.
-int64_t encoder_debounce_callback(alarm_id_t id, void *encoder) {
-	encoder_read(encoder);
+// // this is not going to work if 2 knobs are moved simultaneously
+// int64_t encoder_debounce_callback(alarm_id_t id, void *encoder) {
+// 	encoder_read(encoder);
 
-	return 0;
-}
+// 	return 0;
+// }
 
 void isr_gpio_callback(uint gpio, uint32_t events) {
 	switch (gpio) {
 		case RIGHTA: {
-			if (!Right.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Right, 0);
-			Right.debounce = 1;
-			//encoder_read(RIGHTA, RIGHTB, &rtCounts, &rtDir);
+			encoder_read(&Right);
+			break;
+		}
+		case RIGHTB: {
+			encoder_inc(&Right);
 			break;
 		}
 		case MIDDLEA: {
-			if (!Middle.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Middle, 0);
-			Middle.debounce = 1;
-			//encoder_read(MIDDLEA, MIDDLEB, &mdCounts, &mdDir);
+			encoder_read(&Middle);
+			break;
+		}
+		case MIDDLEB: {
+			encoder_inc(&Middle);
 			break;
 		}
 		case LEFTA: {
-			if (!Left.debounce) add_alarm_in_ms(DEBOUNCE_ENC, encoder_debounce_callback, &Left, 0);
-			Left.debounce = 1;
-			//encoder_read(LEFTA, LEFTB, &lfCounts, &lfDir);
+			encoder_read(&Left);
+			break;
+		}
+		case LEFTB: {
+			encoder_inc(&Left);
 			break;
 		}
 	}
 }
+
+// bouncing way more evident now that looking @ counts instead of just dir
+// seems to be working but needs some RC love
 
 int main() {
 	stdio_init_all();	// UART and UART to USB setup for both input and output
@@ -55,20 +63,26 @@ int main() {
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
 
-
-
-
-
 	while(1) 
 	{
 		if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
 		else gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
+		static uint32_t lastPrintTime = 0;
+		if (time_ms() - lastPrintTime > PRINT_TIME) {
+			int16_t rt = Right.counts;
+			int16_t md = Middle.counts;
+			int16_t lf = Left.counts;
+			printf("Right: %d\tMiddle: %d\tLeft: %d\n", rt, md, lf);
+			lastPrintTime = time_ms();
+		}
+
+
 		// // Hello World Heartbeat
-		// static absolute_time_t lastPrint = 0;
-		// if (get_absolute_time() - lastPrint > PRINT_TIME)	{
+		// static uint32_t lastPrint = 0;
+		// if (time_ms() - lastPrint > PRINT_TIME)	{
 		// 	printf("Hello World\n");
-		// 	lastPrint = get_absolute_time();
+		// 	lastPrint = time_ms();
 		// }
 
 		ConsoleProcess();

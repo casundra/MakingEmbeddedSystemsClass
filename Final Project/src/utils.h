@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #define BLINK_TIME	1000	// milliseconds
-#define PRINT_TIME	5000
+#define PRINT_TIME	1000
 
 uint32_t time_ms();
 void heartbeat_init();
