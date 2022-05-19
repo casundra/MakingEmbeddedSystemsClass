@@ -14,15 +14,15 @@ I'm printing out:
 * Normal Variable in while(1)
 
 `Stack Pointer:  20041FC0
-Heap Pointer:   20006538
-Beginning of bss:       20003548
-Endinging of bss:       20004438
-Initialized Global Variable:    20003354
-Uninitialized Global Variable:  20004430
-Initialized Setup Variable:     20041FD5
-Uninitialized Setup Variable:   20041FD8
-Static While(1) Variable:       2000416C
-Normal While(1) Variable:       20041FD6`
+Heap Pointer:   20006538  
+Beginning of bss:       20003548  
+Endinging of bss:       20004438  
+Initialized Global Variable:    20003354  
+Uninitialized Global Variable:  20004430  
+Initialized Setup Variable:     20041FD5  
+Uninitialized Setup Variable:   20041FD8  
+Static While(1) Variable:       2000416C  
+Normal While(1) Variable:       20041FD6`  
 
 Things on the Stack:
 * Initialized Setup Variable
@@ -41,9 +41,9 @@ Interesting that variables in setup remain on the stack even though they're not 
 Many thanks to Daniel for staying long on the homework help session and helped me with heap and stack variables - I had no idea where to look for them or how to access them.  And then I belatedly just saw the hint link now in the Discord.  Didn't even know there were homework hint links!
 
 ## Linker Script
-Found it in:
-C:\Users\(username)\.platformio\packages\toolchain-gccarmnoneeabi\arm-none-eabi\lib\ldscripts
-Called "armelf.nx" (thank you internet)
+Found it in:  
+C:\Users\(username)\.platformio\packages\toolchain-gccarmnoneeabi\arm-none-eabi\lib\ldscripts  
+Called "armelf.nx" (thank you internet)  
 ..and that's where I chicken out and say hell no to messing with things that are vital to operation that I don't understand.  :)
 
 ## Map File
