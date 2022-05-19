@@ -14,6 +14,8 @@
 #include "encoders.h"			// driver for encoders
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
 
+//#include <cmsis_armclang.h>
+
 #define DEBOUNCE_ENC	1	// ms of debounce time
 
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
@@ -30,6 +32,9 @@ const struct {
         {pattern_sparkle, "Sparkles"},
         {pattern_greys,   "Greys"},
 };
+
+uint8_t initglobalVariable = 1;
+uint32_t uninitglobalVariable;
 
 // // this is not going to work if 2 knobs are moved simultaneously
 // int64_t encoder_debounce_callback(alarm_id_t id, void *encoder) {
@@ -68,6 +73,7 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 }
 
 
+
 // bouncing way more evident now that looking @ counts instead of just dir
 // seems to be working but needs some RC love
 
@@ -94,18 +100,40 @@ int main() {
 	ConsoleInit();
 	printf("WS2812 Smoke Test, using pin %d", WS2812_PIN);
 
+	// found these in cmsis_armclang.h on Rpi Pico github but couldn't include it, would have to check local path and presence.
+	// uint32_t stackPointer = __TZ_get_SP_NS;
+	// uint32_t mainStackPointer = __get_MSP;
+	// uint32_t processStackPointer = __get_PSP;
+
+	// many thanks to Daniel who helped with heap and stack pointers
+
+
+	uint8_t initSetupVariable = 1;
+	uint32_t uninitSetupVariable;
+
 
 	while(1) 
 	{
-		if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
-		else gpio_put(PICO_DEFAULT_LED_PIN, 0);
+		// if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
+		// else gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
 		static uint32_t lastPrintTime = 0;
 		if (time_ms() - lastPrintTime > PRINT_TIME) {
 			int16_t rt = Right.counts;
 			int16_t md = Middle.counts;
 			int16_t lf = Left.counts;
-			printf("Right: %d\tMiddle: %d\tLeft: %d\n", rt, md, lf);
+		//	printf("Right: %d\tMiddle: %d\tLeft: %d\n", rt, md, lf);
+			uint32_t stackPointer;
+			__asm volatile ("mov %0, r13" : "=r" (stackPointer) );  // thank you for your help, Daniel!
+			uint32_t *heapPointer = malloc(1);
+			printf("Stack Pointer:\t%x\n", (uint) stackPointer);
+			printf("Heap Pointer:\t%x\n", (uint) heapPointer);
+			printf("Initialized Global Variable:\t%x\n", (uint) &initglobalVariable);
+			printf("Uninitialized Global Variable:\t%x\n", (uint) &uninitglobalVariable);
+			printf("Initialized Setup Variable:\t%x\n", (uint) &initSetupVariable);
+			printf("Uninitialized Setup Variable:\t%x\n", (uint) &uninitSetupVariable);
+			printf("Static While(1) Variable:\t%x\n", (uint) &lastPrintTime);
+			printf("Normal While(1) Variable:\t%x\n", (uint) &rt);
 			lastPrintTime = time_ms();
 		}
 
@@ -118,17 +146,17 @@ int main() {
 		// }
 
 		ConsoleProcess();
-	//	heartbeat();
+		heartbeat();
     	sleep_ms(2); 
 
-		int pat = rand() % count_of(pattern_table);
-        int dir = (rand() >> 30) & 1 ? 1 : -1;
-        puts(pattern_table[pat].name);
-        puts(dir == 1 ? "(forward)" : "(backward)");
-        for (int i = 0; i < 1000; ++i) {
-            pattern_table[pat].pat(NUM_PIXELS, t);
-            sleep_ms(10);
-            t += dir;
-        }
+	// 	int pat = rand() % count_of(pattern_table);
+    //     int dir = (rand() >> 30) & 1 ? 1 : -1;
+    //     puts(pattern_table[pat].name);
+    //     puts(dir == 1 ? "(forward)" : "(backward)");
+    //     for (int i = 0; i < 1000; ++i) {
+    //         pattern_table[pat].pat(NUM_PIXELS, t);
+    //         sleep_ms(10);
+    //         t += dir;
+    //     }
 	}	
 }
