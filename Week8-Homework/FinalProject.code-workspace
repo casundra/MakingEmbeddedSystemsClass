@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "Final Project",
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"encoders.h": "c"
+		}
+	}
+}
