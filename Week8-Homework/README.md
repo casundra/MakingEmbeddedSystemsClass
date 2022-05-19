@@ -13,7 +13,7 @@ I'm printing out:
 * Static Variable in while(1)
 * Normal Variable in while(1)
 
-`Stack Pointer:  20041FC0
+Stack Pointer:  20041FC0  
 Heap Pointer:   20006538  
 Beginning of bss:       20003548  
 Endinging of bss:       20004438  
@@ -22,7 +22,7 @@ Uninitialized Global Variable:  20004430
 Initialized Setup Variable:     20041FD5  
 Uninitialized Setup Variable:   20041FD8  
 Static While(1) Variable:       2000416C  
-Normal While(1) Variable:       20041FD6`  
+Normal While(1) Variable:       20041FD6
 
 Things on the Stack:
 * Initialized Setup Variable
