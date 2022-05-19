@@ -111,6 +111,13 @@ int main() {
 	uint8_t initSetupVariable = 1;
 	uint32_t uninitSetupVariable;
 
+	extern int __end__;
+    extern int __HeapLimit;
+    extern int __bss_start__;
+    extern int __bss_end__;
+    extern int __stack;
+    extern int __StackLimit;
+
 
 	while(1) 
 	{
@@ -126,14 +133,16 @@ int main() {
 			uint32_t stackPointer;
 			__asm volatile ("mov %0, r13" : "=r" (stackPointer) );  // thank you for your help, Daniel!
 			uint32_t *heapPointer = malloc(1);
-			printf("Stack Pointer:\t%x\n", (uint) stackPointer);
-			printf("Heap Pointer:\t%x\n", (uint) heapPointer);
-			printf("Initialized Global Variable:\t%x\n", (uint) &initglobalVariable);
-			printf("Uninitialized Global Variable:\t%x\n", (uint) &uninitglobalVariable);
-			printf("Initialized Setup Variable:\t%x\n", (uint) &initSetupVariable);
-			printf("Uninitialized Setup Variable:\t%x\n", (uint) &uninitSetupVariable);
-			printf("Static While(1) Variable:\t%x\n", (uint) &lastPrintTime);
-			printf("Normal While(1) Variable:\t%x\n", (uint) &rt);
+			printf("Stack Pointer:\t%08X\n", (uint) stackPointer);
+			printf("Heap Pointer:\t%08X\n", (uint) heapPointer);
+			printf("Beginning of bss:\t%08X\n", (uint) &__bss_start__);
+			printf("Endinging of bss:\t%08X\n", (uint) &__bss_end__);
+			printf("Initialized Global Variable:\t%08X\n", (uint) &initglobalVariable);
+			printf("Uninitialized Global Variable:\t%08X\n", (uint) &uninitglobalVariable);
+			printf("Initialized Setup Variable:\t%08X\n", (uint) &initSetupVariable);
+			printf("Uninitialized Setup Variable:\t%08X\n", (uint) &uninitSetupVariable);
+			printf("Static While(1) Variable:\t%08X\n", (uint) &lastPrintTime);
+			printf("Normal While(1) Variable:\t%08X\n", (uint) &rt);
 			lastPrintTime = time_ms();
 		}
 
