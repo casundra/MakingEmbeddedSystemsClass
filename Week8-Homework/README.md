@@ -13,6 +13,7 @@ I'm printing out:
 * Static Variable in while(1)
 * Normal Variable in while(1)
 
+```
 Stack Pointer:  20041FC0  
 Heap Pointer:   20006538  
 Beginning of bss:       20003548  
@@ -23,6 +24,7 @@ Initialized Setup Variable:     20041FD5
 Uninitialized Setup Variable:   20041FD8  
 Static While(1) Variable:       2000416C  
 Normal While(1) Variable:       20041FD6
+```
 
 Things on the Stack:
 * Initialized Setup Variable
@@ -47,12 +49,15 @@ Called "armelf.nx" (thank you internet)
 ..and that's where I chicken out and say hell no to messing with things that are vital to operation that I don't understand.  :)
 
 ## Map File
-Success!  Thanks to Tony Habib for the help - turns out that build_flags are quite sensitive to whitespace.  Got rid of all around the -Wl section and it worked!  
-`; the below is very sensitive to whitespace!  Make sure there is none before and after, especially with -Wl options.  Now output.map is generated!  So exciting.  There were no real surprises, the addresses for stack, bss, initial heap were the same as output in the code.
+Success!  Thanks to Tony Habib for the help - turns out that build_flags in platformio.ini are quite sensitive to whitespace.  Got rid of all around the -Wl section and it worked!  Now output.map is generated!  So exciting.  There were no real surprises, the addresses for stack, bss, initial heap were the same as output in the code.
+
+```
+; the below is very sensitive to whitespace!  Make sure there is none before and after, especially with -Wl options
 
 build_flags = ; SDK 1.2.0 and above
         -D LIB_PICO_STDIO_USB
         -D LIB_PICO_STDIO_UART
         ;-D LIB_PICO_STDIO_SEMIHOSTING
         ;-v ; verbose output, holy shitballs this adds like 30+ seconds to the compile time
-        -Wl,-Map,output.map`
+        -Wl,-Map,output.map
+```
