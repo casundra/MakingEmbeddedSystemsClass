@@ -41,27 +41,27 @@ const struct {
 void isr_gpio_callback(uint gpio, uint32_t events) {
 	switch (gpio) {
 		case RIGHTA: {
-			encoder_read(&Right);
+			encoder_readA(&Right);
 			break;
 		}
 		case RIGHTB: {
-			encoder_inc(&Right);
+			encoder_readB(&Right);
 			break;
 		}
 		case MIDDLEA: {
-			encoder_read(&Middle);
+			encoder_readA(&Middle);
 			break;
 		}
 		case MIDDLEB: {
-			encoder_inc(&Middle);
+			encoder_readB(&Middle);
 			break;
 		}
 		case LEFTA: {
-			encoder_read(&Left);
+			encoder_readA(&Left);
 			break;
 		}
 		case LEFTB: {
-			encoder_inc(&Left);
+			encoder_readB(&Left);
 			break;
 		}
 	}
@@ -84,11 +84,11 @@ int main() {
 	encoder_init(LEFTA, LEFTB);
 	gpio_set_irq_enabled_with_callback(RIGHTA, GPIO_IRQ_EDGE_RISE, 1, &isr_gpio_callback);
 
-	PIO pio = pio0;
-    int sm = 0;
-    uint offset = pio_add_program(pio, &ws2812_program);
-	 ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
-	int t = 0;
+	// PIO pio = pio0;
+    // int sm = 0;
+    // uint offset = pio_add_program(pio, &ws2812_program);
+	//  ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
+	// int t = 0;
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
@@ -97,15 +97,15 @@ int main() {
 
 	while(1) 
 	{
-		if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
-		else gpio_put(PICO_DEFAULT_LED_PIN, 0);
+		// if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
+		// else gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
 		static uint32_t lastPrintTime = 0;
 		if (time_ms() - lastPrintTime > PRINT_TIME) {
 			int16_t rt = Right.counts;
 			int16_t md = Middle.counts;
 			int16_t lf = Left.counts;
-			printf("Right: %d\tMiddle: %d\tLeft: %d\n", rt, md, lf);
+			printf("Left: %d \tMiddle: %d\tRight: %d\n", lf, md, rt);
 			lastPrintTime = time_ms();
 		}
 
@@ -118,17 +118,17 @@ int main() {
 		// }
 
 		ConsoleProcess();
-	//	heartbeat();
+		heartbeat();
     	sleep_ms(2); 
 
-		int pat = rand() % count_of(pattern_table);
-        int dir = (rand() >> 30) & 1 ? 1 : -1;
-        puts(pattern_table[pat].name);
-        puts(dir == 1 ? "(forward)" : "(backward)");
-        for (int i = 0; i < 1000; ++i) {
-            pattern_table[pat].pat(NUM_PIXELS, t);
-            sleep_ms(10);
-            t += dir;
-        }
+		// int pat = rand() % count_of(pattern_table);
+        // int dir = (rand() >> 30) & 1 ? 1 : -1;
+        // puts(pattern_table[pat].name);
+        // puts(dir == 1 ? "(forward)" : "(backward)");
+        // for (int i = 0; i < 1000; ++i) {
+        //     pattern_table[pat].pat(NUM_PIXELS, t);
+        //     sleep_ms(10);
+        //     t += dir;
+        // }
 	}	
 }
