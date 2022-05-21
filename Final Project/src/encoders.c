@@ -32,48 +32,54 @@ void encoder_init(uint phasea, uint phaseb) {
 // each twist/detent.
 
 // Note that when breadboarding encoders, the wires are very sensitive to crosstalk.
+// Encoders are debounced in hardware with 4.99k resistor and 0.1uF cap.
 
 // Reads encoder phase A pins and determines direction of rotation
 // It is assumed that this is called from an interrupt,
 // just after Phase A has gone high.
-void encoder_readA(Encoder *encoder) {
+uint8_t encoder_readA(Encoder *encoder) {
+    uint8_t changed = 0;
     uint8_t pha = gpio_get(encoder->phPinA);
     uint8_t phb = gpio_get(encoder->phPinB);
     if (pha) {
         if (phb) {
             encoder->dir = CCW;
-            encoder_inc(encoder);
+            changed = encoder_inc(encoder);
         }
         else {
             encoder->dir = CW;
-            encoder_inc(encoder);
+            changed = encoder_inc(encoder);
         }
     }
     // ignores it as bounce if Phase A is low immediately after interrupt fires
+    return changed;
 }
 
 // Reads encoder phase B pins and determines direction of rotation
 // It is assumed that this is called from an interrupt,
 // just after Phase B has gone low.
-void encoder_readB(Encoder *encoder) {
+uint8_t encoder_readB(Encoder *encoder) {
+    uint8_t changed = 0;
     uint8_t pha = gpio_get(encoder->phPinA);
     uint8_t phb = gpio_get(encoder->phPinB);
     if (!phb) {
         if (pha) {
             encoder->dir = CCW;
-            encoder_inc(encoder);
+            changed = encoder_inc(encoder);
         }
         else {
             encoder->dir = CW;
-            encoder_inc(encoder);
+            changed = encoder_inc(encoder);
         }
     }
     // ignores it as bounce if Phase B is low immediately after interrupt fires
+    return changed;
 }
 
 // Increments the encoder's count
 // Direction is either -1 or +1
 // Adding dir to counts automatically inc/dec depending on direction
-void encoder_inc(Encoder *encoder) {
+uint8_t encoder_inc(Encoder *encoder) {
     encoder->counts += encoder->dir;
+    return 1;
 }

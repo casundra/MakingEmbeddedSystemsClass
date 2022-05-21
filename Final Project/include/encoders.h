@@ -16,8 +16,8 @@ typedef struct EncoderStruct {
 } Encoder;
 
 void encoder_init(uint phasea, uint phaseb);
-void encoder_readA(Encoder *encoder);
-void encoder_readB(Encoder *encoder);
-void encoder_inc(Encoder *encoder);
+uint8_t encoder_readA(Encoder *encoder);
+uint8_t encoder_readB(Encoder *encoder);
+uint8_t encoder_inc(Encoder *encoder);
 
 #endif
