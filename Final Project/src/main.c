@@ -14,54 +14,37 @@
 #include "encoders.h"			// driver for encoders
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
 
-#define DEBOUNCE_ENC	1	// ms of debounce time
 
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0};
 Encoder Left = {LEFTA, LEFTB, 0, 0, 0};
-
-typedef void (*pattern)(uint len, uint t);
-const struct {
-    pattern pat;
-    const char *name;
-} pattern_table[] = {
-        {pattern_snakes,  "Snakes!"},
-        {pattern_random,  "Random data"},
-        {pattern_sparkle, "Sparkles"},
-        {pattern_greys,   "Greys"},
-};
-
-// // this is not going to work if 2 knobs are moved simultaneously
-// int64_t encoder_debounce_callback(alarm_id_t id, void *encoder) {
-// 	encoder_read(encoder);
-
-// 	return 0;
-// }
+volatile uint8_t enc_count_update = 0;
 
 void isr_gpio_callback(uint gpio, uint32_t events) {
+
 	switch (gpio) {
 		case RIGHTA: {
-			encoder_readA(&Right);
+			enc_count_update = encoder_readA(&Right);
 			break;
 		}
 		case RIGHTB: {
-			encoder_readB(&Right);
+			enc_count_update = encoder_readB(&Right);
 			break;
 		}
 		case MIDDLEA: {
-			encoder_readA(&Middle);
+			enc_count_update = encoder_readA(&Middle);
 			break;
 		}
 		case MIDDLEB: {
-			encoder_readB(&Middle);
+			enc_count_update = encoder_readB(&Middle);
 			break;
 		}
 		case LEFTA: {
-			encoder_readA(&Left);
+			enc_count_update = encoder_readA(&Left);
 			break;
 		}
 		case LEFTB: {
-			encoder_readB(&Left);
+			enc_count_update = encoder_readB(&Left);
 			break;
 		}
 	}
@@ -76,9 +59,12 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 // hopefully parallel also means non-blocking?  Uses DMA.
 
 int main() {
+
+	// UART and onboard LED initialization
 	stdio_init_all();	// UART and UART to USB setup for both input and output
 	heartbeat_init();
 
+	// Encoder initialization
 	encoder_init(RIGHTA, RIGHTB);
 	encoder_init(MIDDLEA, MIDDLEB);
 	encoder_init(LEFTA, LEFTB);
@@ -97,16 +83,12 @@ int main() {
 
 	while(1) 
 	{
-		// if ( (Left.dir) == CW) gpio_put(PICO_DEFAULT_LED_PIN, 1);
-		// else gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
 		static uint32_t lastPrintTime = 0;
-		if (time_ms() - lastPrintTime > PRINT_TIME) {
-			int16_t rt = Right.counts;
-			int16_t md = Middle.counts;
-			int16_t lf = Left.counts;
-			printf("Left: %d \tMiddle: %d\tRight: %d\n", lf, md, rt);
+		if (enc_count_update) {
+			printf("Left: %d \tMiddle: %d\tRight: %d\n", Left.counts, Middle.counts, Right.counts);
 			lastPrintTime = time_ms();
+			enc_count_update = 0;
 		}
 
 
