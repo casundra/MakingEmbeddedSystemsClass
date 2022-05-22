@@ -51,6 +51,7 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 }
 
 Color mainColor = {0, 0, 0, 16};
+Color matrixColor = {53, 0, 62, 15};
 enum colorState{RED, GRN, BLU};
 
 
@@ -75,14 +76,14 @@ int main() {
 
 	// WS2812 LED Ring initialization via PIO
 	PIO pio = pio0;
-    int sm = 0;
-    uint offset = pio_add_program(pio, &ws2812_program);
-	ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
-	int t = 0;
+    uint offset_ring = pio_add_program(pio, &ws2812_program);
+	uint offset_matrix = pio_add_program(pio, &ws2812_program);
+	ws2812_program_init(pio, RING_SM, offset_ring, LED_RING, 800000, RGB_ONLY);
+	ws2812_program_init(pio, MATRIX_SM, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
+
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
-	printf("WS2812 Smoke Test, using pin %d", WS2812_PIN);
 
 
 	while(1) 
@@ -105,6 +106,9 @@ int main() {
 		ConsoleProcess();
 		heartbeat();
     	sleep_ms(2); 
+
+		uint8_t matrixSize[2] = {MATRIX_ROWS, MATRIX_COLS};
+		matrixMono(&matrixColor, matrixSize);
 
 		static enum colorState whichColor = RED;
 		static uint32_t lastRingTime = 0;
@@ -138,20 +142,5 @@ int main() {
 			solidRingColor(&mainColor, RING_PIXELS-1);
 			lastRingTime = time_ms();
 		}
-
-
-		// for (uint8_t i = 0; i < 256; i++) {
-		// 	solidRingColor(mainColor, i);
-		// }
-
-		// int pat = rand() % count_of(pattern_table);
-        // int dir = (rand() >> 30) & 1 ? 1 : -1;
-        // puts(pattern_table[pat].name);
-        // puts(dir == 1 ? "(forward)" : "(backward)");
-        // for (int i = 0; i < 1000; ++i) {
-        //     pattern_table[pat].pat(NUM_PIXELS, t);
-        //     sleep_ms(10);
-        //     t += dir;
-        // }
 	}	
 }

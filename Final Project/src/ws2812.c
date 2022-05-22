@@ -13,9 +13,14 @@
 #include "ws2812.h"
 
 
-static inline void put_pixel(uint32_t pixel_grb) {
-    pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
+static inline void put_pixel_ring(uint32_t pixel_grb) {
+    pio_sm_put_blocking(pio0, RING_SM, pixel_grb << 8u);
 }
+
+static inline void put_pixel_matrix(uint32_t pixel_grb) {
+    pio_sm_put_blocking(pio0, MATRIX_SM, pixel_grb << 8u);
+}
+
 
 static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
     return
@@ -29,47 +34,45 @@ void solidRingColor(Color *color, uint8_t numLEDs) {
     uint32_t grn = (color->grn * color->brt) >> 8;
     uint32_t blu = (color->blu * color->brt) >> 8;
     for (uint8_t i = 0; i < numLEDs; i++) {
-        put_pixel(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu));
+        put_pixel_ring(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu));
     }
 }
 
+void solidMatrixColor(Color *color, uint8_t numLEDs) {
+    uint32_t red = (color->red * color->brt) >> 8;
+    uint32_t grn = (color->grn * color->brt) >> 8;
+    uint32_t blu = (color->blu * color->brt) >> 8;
+    for (uint8_t i = 0; i < numLEDs; i++) {
+        put_pixel_matrix(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu));
+    }
+}
 
-// void pattern_snakes(uint len, uint t) {
-//     for (uint i = 0; i < len; ++i) {
-//         uint x = (i + (t >> 1)) % 64;
-//         if (x < 10)
-//             put_pixel(urgb_u32(0xff, 0, 0));
-//         else if (x >= 15 && x < 25)
-//             put_pixel(urgb_u32(0, 0xff, 0));
-//         else if (x >= 30 && x < 40)
-//             put_pixel(urgb_u32(0, 0, 0xff));
-//         else
-//             put_pixel(0);
-//     }
-// }
+void matrixMono(Color *color, uint8_t *size) {
+    uint32_t red = (color->red * color->brt) >> 8;
+    uint32_t grn = (color->grn * color->brt) >> 8;
+    uint32_t blu = (color->blu * color->brt) >> 8;
+    uint8_t rows = size[0];
+    uint8_t cols = size[1];
+    uint8_t firstMonoPixel = (rows >> 1)*cols;
+    uint8_t monoCols = cols >> 2;
+    uint8_t monoRows = rows = (rows >> 1);
+    for (uint8_t i = 0; i < firstMonoPixel; i++) {
+        put_pixel_matrix(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu));
+    }
+    for (uint8_t i = 0; i < monoRows; i++) {
+        for (uint8_t j = 0; j < 4; j++) {
+            for (uint8_t k = 0; k < monoCols; k++ ) {
+                uint8_t brtInit = color->brt *3;
+                uint8_t brtFactor = j*(color->brt);
+                red = (color->red * (brtInit - brtFactor)) >> 8;
+                grn = (color->grn * (brtInit - brtFactor)) >> 8;
+                blu = (color->blu * (brtInit - brtFactor)) >> 8;
+                put_pixel_matrix(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu)); 
+            }
 
-// void pattern_random(uint len, uint t) {
-//     if (t % 8)
-//         return;
-//     for (int i = 0; i < len; ++i)
-//         put_pixel(rand());
-// }
-
-// void pattern_sparkle(uint len, uint t) {
-//     if (t % 8)
-//         return;
-//     for (int i = 0; i < len; ++i)
-//         put_pixel(rand() % 16 ? 0 : 0xffffffff);
-// }
-
-// void pattern_greys(uint len, uint t) {
-//     int max = 100; // let's not draw too much current!
-//     t %= max;
-//     for (int i = 0; i < len; ++i) {
-//         put_pixel(t * 0x10101);
-//         if (++t >= max) t = 0;
-//     }
-// }
+        }
+    }
+}
 
 
 

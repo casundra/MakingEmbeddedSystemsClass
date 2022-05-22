@@ -16,9 +16,13 @@
 #include "hardware/clocks.h"
 #include "ws2812.pio.h"
 
-#define IS_RGBW     0
-#define RING_PIXELS  16
-#define WS2812_PIN LED_RING
+#define RGB_ONLY    0
+#define RGB_WHITE   1
+#define RING_SM         0
+#define RING_PIXELS     16
+#define MATRIX_SM       1
+#define MATRIX_ROWS     8
+#define MATRIX_COLS     8
 
 typedef struct colorStruct {
     uint8_t red;
@@ -27,16 +31,12 @@ typedef struct colorStruct {
     uint8_t brt;
 } Color;
 
-static inline void put_pixel(uint32_t pixel_grb);
+static inline void put_pixel_ring(uint32_t pixel_grb);
+static inline void put_pixel_matrix(uint32_t pixel_grb);
 static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
 void solidRingColor(Color *color, uint8_t numLEDs);
-
-// void pattern_snakes(uint len, uint t);
-// void pattern_random(uint len, uint t);
-// void pattern_sparkle(uint len, uint t);
-// void pattern_greys(uint len, uint t);
-
-
+void solidMatrixColor(Color *color, uint8_t numLEDs);
+void matrixMono(Color *color, uint8_t *size);
 
 
 #endif

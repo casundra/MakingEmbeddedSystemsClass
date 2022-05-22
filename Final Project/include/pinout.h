@@ -5,8 +5,8 @@
 // Save 0 and 1 for UART TX/RX
 //#define LED_MATRIX  0   // WS2812B addressable LED 8x8 matrix
 //#define LED_RING    1   // WS2812B addressable LED 16 pixel ring
-#define LED_MATRIX  2   // WS2812B addressable LED 8x8 matrix
-#define LED_RING    3   // WS2812B addressable LED 16 pixel ring
+#define LED_RING    2   // WS2812B addressable LED 16 pixel ring
+#define LED_MATRIX  3   // WS2812B addressable LED 8x8 matrix
 #define LCD_SDA     4   // TFT LCD, I2C but could potentially set up for SPI
 #define LCD_SCK     5
 #define LCD_A0      6
