@@ -17,17 +17,24 @@
 #include "ws2812.pio.h"
 
 #define IS_RGBW     0
-#define NUM_PIXELS  16
-
+#define RING_PIXELS  16
 #define WS2812_PIN LED_RING
+
+typedef struct colorStruct {
+    uint8_t red;
+    uint8_t grn;
+    uint8_t blu;
+    uint8_t brt;
+} Color;
 
 static inline void put_pixel(uint32_t pixel_grb);
 static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
+void solidRingColor(Color *color, uint8_t numLEDs);
 
-void pattern_snakes(uint len, uint t);
-void pattern_random(uint len, uint t);
-void pattern_sparkle(uint len, uint t);
-void pattern_greys(uint len, uint t);
+// void pattern_snakes(uint len, uint t);
+// void pattern_random(uint len, uint t);
+// void pattern_sparkle(uint len, uint t);
+// void pattern_greys(uint len, uint t);
 
 
 

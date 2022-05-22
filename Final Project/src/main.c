@@ -50,18 +50,9 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 	}
 }
 
-typedef void (*pattern)(uint len, uint t);
-const struct {
-    pattern pat;
-    const char *name;
-} pattern_table[] = {
-        {pattern_snakes,  "Snakes!"},
-        {pattern_random,  "Random data"},
-        {pattern_sparkle, "Sparkles"},
-        {pattern_greys,   "Greys"},
-//        {pattern_solid,  "Solid!"},
-//        {pattern_fade, "Fade"},
-};
+Color mainColor = {0, 0, 0, 16};
+enum colorState{RED, GRN, BLU};
+
 
 // bouncing way more evident now that looking @ counts instead of just dir
 // seems to be working but needs some RC love
@@ -115,14 +106,52 @@ int main() {
 		heartbeat();
     	sleep_ms(2); 
 
-		int pat = rand() % count_of(pattern_table);
-        int dir = (rand() >> 30) & 1 ? 1 : -1;
-        puts(pattern_table[pat].name);
-        puts(dir == 1 ? "(forward)" : "(backward)");
-        for (int i = 0; i < 1000; ++i) {
-            pattern_table[pat].pat(NUM_PIXELS, t);
-            sleep_ms(10);
-            t += dir;
-        }
+		static enum colorState whichColor = RED;
+		static uint32_t lastRingTime = 0;
+		if (time_ms() - lastRingTime > 100) {
+			switch(whichColor) {
+				case RED: {
+					if (mainColor.red >= 255) {
+						mainColor.red = 0;
+						whichColor = GRN;
+					}
+					else mainColor.red++;
+					break;
+				}
+				case GRN: {
+					if (mainColor.grn >= 255) {
+						mainColor.grn = 0;
+						whichColor = BLU;
+					}
+					else mainColor.grn++;
+					break;
+				}
+				case BLU: {
+					if (mainColor.blu >= 255) {
+						mainColor.blu = 0;
+						whichColor = RED;
+					}
+					else mainColor.blu++;
+					break;
+				}
+			}
+			solidRingColor(&mainColor, RING_PIXELS-1);
+			lastRingTime = time_ms();
+		}
+
+
+		// for (uint8_t i = 0; i < 256; i++) {
+		// 	solidRingColor(mainColor, i);
+		// }
+
+		// int pat = rand() % count_of(pattern_table);
+        // int dir = (rand() >> 30) & 1 ? 1 : -1;
+        // puts(pattern_table[pat].name);
+        // puts(dir == 1 ? "(forward)" : "(backward)");
+        // for (int i = 0; i < 1000; ++i) {
+        //     pattern_table[pat].pat(NUM_PIXELS, t);
+        //     sleep_ms(10);
+        //     t += dir;
+        // }
 	}	
 }
