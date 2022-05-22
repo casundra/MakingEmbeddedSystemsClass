@@ -23,6 +23,7 @@
 
 static inline void put_pixel(uint32_t pixel_grb);
 static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
+
 void pattern_snakes(uint len, uint t);
 void pattern_random(uint len, uint t);
 void pattern_sparkle(uint len, uint t);
