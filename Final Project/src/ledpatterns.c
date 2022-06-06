@@ -35,6 +35,7 @@ void solidMatrixColor(Color color) {
 }
 
 void matrixMono(Color color) {
+    Color initColor = color;
     adjustBrightness(&color);
     uint8_t rows = MATRIX_ROWS;
     uint8_t cols = MATRIX_COLS;
@@ -49,9 +50,9 @@ void matrixMono(Color color) {
             for (uint8_t k = 0; k < monoCols; k++ ) {
                 uint8_t brtInit = color.brt *3;
                 uint8_t brtFactor = j*(color.brt);
-                uint32_t red = (color.red * (brtInit - brtFactor)) >> 8;
-                uint32_t grn = (color.grn * (brtInit - brtFactor)) >> 8;
-                uint32_t blu = (color.blu * (brtInit - brtFactor)) >> 8;
+                uint32_t red = initColor.red * (brtInit - brtFactor) >> 8;
+                uint32_t grn = initColor.grn * (brtInit - brtFactor) >> 8;
+                uint32_t blu = initColor.blu * (brtInit - brtFactor) >> 8;
                  put_pixel(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu), MATRIX); 
             }
 

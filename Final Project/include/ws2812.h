@@ -25,7 +25,15 @@
 #define RING         0
 #define MATRIX       1
 
-inline void put_pixel(uint32_t pixel_grb, uint8_t strip);
-inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
+static inline void put_pixel(uint32_t pixel_grb, uint8_t strip) {
+    pio_sm_put_blocking(pio0, strip, pixel_grb << 8u);
+}
+
+static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
+    return
+            ((uint32_t) (r) << 8) |
+            ((uint32_t) (g) << 16) |
+            (uint32_t) (b);
+}
 
 #endif
