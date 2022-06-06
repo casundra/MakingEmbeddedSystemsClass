@@ -51,17 +51,9 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 	}
 }
 
-Color mainColor = {0, 0, 0, 16};
-Color matrixColor = {53, 0, 62, 15};
-enum colorState{RED, GRN, BLU};
-
-
-// bouncing way more evident now that looking @ counts instead of just dir
-// seems to be working but needs some RC love
-
-// brightness is way the fuck up on the Pico test code, no wonder they print out "Smoke Test"
-// integrate the parallel WS2812 code and turn the brightness down
-// hopefully parallel also means non-blocking?  Uses DMA.
+Color mainColor = {2, 0, 0, 255};
+Color matrixColor = {53, 0, 62, 5};
+//enum colorState{RED, GRN, BLU};
 
 int main() {
 
@@ -108,39 +100,42 @@ int main() {
 		heartbeat();
     	sleep_ms(2); 
 
-		matrixMono(matrixColor);
+		solidMatrixColor(matrixColor);
+		//solidRingColor(mainColor);
+		ringInitRGB();
+		
 
-		static enum colorState whichColor = RED;
-		static uint32_t lastRingTime = 0;
-		if (time_ms() - lastRingTime > 100) {
-			switch(whichColor) {
-				case RED: {
-					if (mainColor.red >= 255) {
-						mainColor.red = 0;
-						whichColor = GRN;
-					}
-					else mainColor.red++;
-					break;
-				}
-				case GRN: {
-					if (mainColor.grn >= 255) {
-						mainColor.grn = 0;
-						whichColor = BLU;
-					}
-					else mainColor.grn++;
-					break;
-				}
-				case BLU: {
-					if (mainColor.blu >= 255) {
-						mainColor.blu = 0;
-						whichColor = RED;
-					}
-					else mainColor.blu++;
-					break;
-				}
-			}
-			solidRingColor(mainColor);
-			lastRingTime = time_ms();
-		}
+		// static enum colorState whichColor = RED;
+		// static uint32_t lastRingTime = 0;
+		// if (time_ms() - lastRingTime > 100) {
+		// 	switch(whichColor) {
+		// 		case RED: {
+		// 			if (mainColor.red >= 255) {
+		// 				mainColor.red = 0;
+		// 				whichColor = GRN;
+		// 			}
+		// 			else mainColor.red++;
+		// 			break;
+		// 		}
+		// 		case GRN: {
+		// 			if (mainColor.grn >= 255) {
+		// 				mainColor.grn = 0;
+		// 				whichColor = BLU;
+		// 			}
+		// 			else mainColor.grn++;
+		// 			break;
+		// 		}
+		// 		case BLU: {
+		// 			if (mainColor.blu >= 255) {
+		// 				mainColor.blu = 0;
+		// 				whichColor = RED;
+		// 			}
+		// 			else mainColor.blu++;
+		// 			break;
+		// 		}
+		// 	}
+		// 	solidRingColor(mainColor);
+		// 	lastRingTime = time_ms();
+		// }
 	}	
 }
