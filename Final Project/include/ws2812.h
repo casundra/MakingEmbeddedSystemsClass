@@ -15,28 +15,17 @@
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
 #include "ws2812.pio.h"
+#include "pinout.h"
 
+// Strip Types
 #define RGB_ONLY    0
 #define RGB_WHITE   1
-#define RING_SM         0
-#define RING_PIXELS     16
-#define MATRIX_SM       1
-#define MATRIX_ROWS     8
-#define MATRIX_COLS     8
 
-typedef struct colorStruct {
-    uint8_t red;
-    uint8_t grn;
-    uint8_t blu;
-    uint8_t brt;
-} Color;
+// State Machine instances for Ring and Matrix
+#define RING         0
+#define MATRIX       1
 
-static inline void put_pixel_ring(uint32_t pixel_grb);
-static inline void put_pixel_matrix(uint32_t pixel_grb);
-static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
-void solidRingColor(Color *color, uint8_t numLEDs);
-void solidMatrixColor(Color *color, uint8_t numLEDs);
-void matrixMono(Color *color, uint8_t *size);
-
+inline void put_pixel(uint32_t pixel_grb, uint8_t strip);
+inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b);
 
 #endif

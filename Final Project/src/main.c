@@ -13,6 +13,7 @@
 #include "utils.h"				// handy time and heartbeat code
 #include "encoders.h"			// driver for encoders
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
+#include "ledpatterns.h"		// creates LED patterns using the WS2812 driver
 
 
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
@@ -78,8 +79,8 @@ int main() {
 	PIO pio = pio0;
     uint offset_ring = pio_add_program(pio, &ws2812_program);
 	uint offset_matrix = pio_add_program(pio, &ws2812_program);
-	ws2812_program_init(pio, RING_SM, offset_ring, LED_RING, 800000, RGB_ONLY);
-	ws2812_program_init(pio, MATRIX_SM, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
+	ws2812_program_init(pio, RING, offset_ring, LED_RING, 800000, RGB_ONLY);
+	ws2812_program_init(pio, MATRIX, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
 
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
@@ -107,8 +108,7 @@ int main() {
 		heartbeat();
     	sleep_ms(2); 
 
-		uint8_t matrixSize[2] = {MATRIX_ROWS, MATRIX_COLS};
-		matrixMono(&matrixColor, matrixSize);
+		matrixMono(matrixColor);
 
 		static enum colorState whichColor = RED;
 		static uint32_t lastRingTime = 0;
@@ -139,7 +139,7 @@ int main() {
 					break;
 				}
 			}
-			solidRingColor(&mainColor, RING_PIXELS-1);
+			solidRingColor(mainColor);
 			lastRingTime = time_ms();
 		}
 	}	
