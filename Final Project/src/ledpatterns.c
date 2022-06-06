@@ -108,7 +108,7 @@ void matrixMono(Color color) {
 #define TRIAD1  (RING_PIXELS / 3)
 #define TRIAD2  (RING_PIXELS - TRIAD1)
 
-void ringInitRGB () {
+void ringInitRYB () {
     
     // a decent RYB color wheel
     put_pixel(urgb_u32(10, 0, 0), RING);  // 0, RED

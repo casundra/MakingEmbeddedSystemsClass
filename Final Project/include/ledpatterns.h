@@ -14,7 +14,7 @@ typedef struct colorStruct {
 void solidRingColor(Color color);
 void solidMatrixColor(Color color);
 void matrixMono(Color color);
-void ringInitRGB ();
+void ringInitRYB ();
 
 
 #endif

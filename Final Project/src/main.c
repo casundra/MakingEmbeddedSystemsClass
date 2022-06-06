@@ -102,7 +102,7 @@ int main() {
 
 		solidMatrixColor(matrixColor);
 		//solidRingColor(mainColor);
-		ringInitRGB();
+		ringInitRYB();
 		
 
 		// static enum colorState whichColor = RED;
