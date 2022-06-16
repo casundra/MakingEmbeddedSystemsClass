@@ -41,6 +41,7 @@
 #include "consoleIo.h"
 #include "version.h"
 #include "data.h"
+#include "brightness.h"
 
 #define IGNORE_UNUSED_VARIABLE(x)     if ( &x == &x ) {}
 

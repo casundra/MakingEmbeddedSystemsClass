@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
+#include "hardware/adc.h"
 
 // application-specific libraries
 #include "console.h"			// for the Serial I/O console (works over UART and USB)
@@ -14,6 +15,7 @@
 #include "encoders.h"			// driver for encoders
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
 #include "ledpatterns.h"		// creates LED patterns using the WS2812 driver
+#include "brightness.h"			// reads brightness from ADC, manipulates Color structure
 
 
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
@@ -74,6 +76,11 @@ int main() {
 	ws2812_program_init(pio, RING, offset_ring, LED_RING, 800000, RGB_ONLY);
 	ws2812_program_init(pio, MATRIX, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
 
+	// ADC initialization
+	adc_init();
+	adc_gpio_init(BRIGHT_POT);  // set up pin for analog input
+	adc_select_input(0);		// select which ADC channel to read
+
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
@@ -89,7 +96,7 @@ int main() {
 		}
 
 
-		// // Hello World Heartbeat
+		// // Hello World Serial Heartbeat
 		// static uint32_t lastPrint = 0;
 		// if (time_ms() - lastPrint > PRINT_TIME)	{
 		// 	printf("Hello World\n");
@@ -100,9 +107,17 @@ int main() {
 		heartbeat();
     	sleep_ms(2); 
 
+		uint8_t brtness;
+		brtness = readBright(&matrixColor);
+		static uint32_t lastPrint = 0;
+		if (time_ms() - lastPrint > PRINT_TIME)	{
+			printf("%d", brtness);
+			printf("\n");
+			lastPrint = time_ms();
+		}
 		solidMatrixColor(matrixColor);
 		//solidRingColor(mainColor);
-		ringInitRYB();
+		ringInitRGB();
 		
 
 		// static enum colorState whichColor = RED;
