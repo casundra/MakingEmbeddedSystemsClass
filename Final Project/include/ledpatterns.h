@@ -18,8 +18,8 @@ typedef struct colorStruct {
 } Color;
 
 // display patterns
-void solidRingColor(Color color);   // single color
-void solidMatrixColor(Color color); // single color
+void ringSolidColor(Color color);   // single color
+void matrixSolidColor(Color color); // single color
 void matrixMono(Color color);   // single color with different brightnesses, doesn't work very well
 void ringInitRYB ();    // RYB color wheel
 void ringInitRGB ();    // RGB color wheel

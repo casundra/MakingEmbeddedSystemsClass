@@ -17,7 +17,7 @@
 #include "ledpatterns.h"		// creates LED patterns using the WS2812 driver
 #include "brightness.h"			// reads brightness from ADC, manipulates Color structure
 
-
+// Encoder Structures and ISR
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0};
 Encoder Left = {LEFTA, LEFTB, 0, 0, 0};
@@ -53,8 +53,10 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 	}
 }
 
+// Color Structures and Globals
 Color mainColor = {2, 0, 0, 255};
 Color matrixColor = {53, 0, 62, 5};
+uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
 //enum colorState{RED, GRN, BLU};
 
 int main() {
@@ -115,8 +117,8 @@ int main() {
 			printf("\n");
 			lastPrint = time_ms();
 		}
-		solidMatrixColor(matrixColor);
-		//solidRingColor(mainColor);
+		matrixSolidColor(matrixColor);
+		//ringSolidColor(mainColor);
 		ringInitRGB();
 		
 
@@ -149,7 +151,7 @@ int main() {
 		// 			break;
 		// 		}
 		// 	}
-		// 	solidRingColor(mainColor);
+		// 	ringSolidColor(mainColor);
 		// 	lastRingTime = time_ms();
 		// }
 	}	
