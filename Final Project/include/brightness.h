@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 #include "ledpatterns.h"
 
-uint8_t readBright(Color *color);
+uint8_t brightInit(Color *color);
+uint8_t brightRead(Color *color);
 
 #endif

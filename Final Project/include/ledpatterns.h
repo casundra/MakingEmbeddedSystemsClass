@@ -17,12 +17,12 @@ typedef struct colorStruct {
     uint8_t brt;
 } Color;
 
-
-void solidRingColor(Color color);
-void solidMatrixColor(Color color);
-void matrixMono(Color color);
-void ringInitRYB ();
-void ringInitRGB ();
+// display patterns
+void solidRingColor(Color color);   // single color
+void solidMatrixColor(Color color); // single color
+void matrixMono(Color color);   // single color with different brightnesses, doesn't work very well
+void ringInitRYB ();    // RYB color wheel
+void ringInitRGB ();    // RGB color wheel
 
 
 #endif

@@ -5,6 +5,10 @@
 #include "console.h"
 
 #define OFFSET_MV   220
+#define BRTLEN      16  // if this is changed, also need to change averaging bit-shifting
+
+static uint16_t Brightness[BRTLEN] = {0};
+static uint16_t *pBright = &Brightness[0];
 
 const uint8_t gammaMatrix[2][256] =
 { 
@@ -46,12 +50,37 @@ const uint8_t gammaMatrix[2][256] =
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255}
 };
 
-uint8_t readBright(Color *color) {
-    uint16_t brightness = adc_read();
-    color->brt = brightness >> 4;
+// Loads brightness values into array and returns average
+// Sleep time is calculated so it takes ~ 1s
+uint8_t brightInit(Color *color) {
+    uint16_t brightNow = 0;
+    uint32_t brightSum = 0;
+    for (uint8_t i = 0; i < BRTLEN; i++) {
+        brightNow = adc_read();
+        Brightness[i] = brightNow;
+        brightSum += brightNow;
+        sleep_ms(50);
+    }
+    return brightSum >> 8;  // divide by 16 for average, and again for uint8 transformation
+}
+
+uint8_t brightRead(Color *color) {
+    uint16_t brightNow = adc_read();
+    *pBright = brightNow;
+    uint32_t brightSum = 0;
+    for (uint8_t i = 0; i < BRTLEN; i++) {
+        brightSum += Brightness[i];
+    }
+
+    if (pBright >= &Brightness[0] + BRTLEN) pBright = &Brightness[0];
+    else pBright++;
+
+    color->brt = brightSum >> 8;
     return color->brt;
 }
 
+//  To Do: a calibration via serial port for each end of the knob
+//
 // eCommandResult_T calBright () {
 //     uint8_t received = 0;
 //     uint16_t loOffset;

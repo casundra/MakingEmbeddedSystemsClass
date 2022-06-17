@@ -76,11 +76,11 @@ int main() {
 	ws2812_program_init(pio, RING, offset_ring, LED_RING, 800000, RGB_ONLY);
 	ws2812_program_init(pio, MATRIX, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
 
-	// ADC initialization
+	// ADC and Brightness initialization
 	adc_init();
 	adc_gpio_init(BRIGHT_POT);  // set up pin for analog input
 	adc_select_input(0);		// select which ADC channel to read
-
+	brightInit(&matrixColor);
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
@@ -108,7 +108,7 @@ int main() {
     	sleep_ms(2); 
 
 		uint8_t brtness;
-		brtness = readBright(&matrixColor);
+		brtness = brightRead(&matrixColor);
 		static uint32_t lastPrint = 0;
 		if (time_ms() - lastPrint > PRINT_TIME)	{
 			printf("%d", brtness);
@@ -153,4 +153,5 @@ int main() {
 		// 	lastRingTime = time_ms();
 		// }
 	}	
+	sleep_ms(100);
 }
