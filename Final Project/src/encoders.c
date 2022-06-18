@@ -82,10 +82,11 @@ uint8_t encoder_readB(Encoder *encoder) {
 // Adding dir to counts automatically inc/dec depending on direction
 uint8_t encoder_inc(Encoder *encoder) {
     encoder->counts += encoder->dir;
+    encoder->change += encoder->dir;
     return 1;
 }
 
-// Prints encoder count to the serial port when updated
+// Prints encoder count to the serial port only when knobs are moved
 uint8_t encoder_print(int16_t lcounts, int16_t mcounts, int16_t rcounts, uint8_t update) {
     if (update) {
         printf("Left: %d \tMiddle: %d\tRight: %d\n", lcounts, mcounts, rcounts);

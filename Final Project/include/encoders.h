@@ -11,7 +11,8 @@ typedef struct EncoderStruct {
 	const uint8_t phPinA;
 	const uint8_t phPinB;
 	volatile uint8_t debounce;
-	volatile int16_t counts;
+	volatile int16_t counts;	// absolute position, -256 to 255 gives 8.5 turns in either direction
+	volatile int8_t change;		// change in counts since last reading
 	volatile int8_t dir;
 } Encoder;
 

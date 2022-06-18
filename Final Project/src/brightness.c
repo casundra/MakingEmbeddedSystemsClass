@@ -3,6 +3,7 @@
 #include "brightness.h"
 #include "hardware/adc.h"
 #include "console.h"
+#include "utils.h"
 
 #define OFFSET_MV   220
 #define BRTLEN      16  // if this is changed, also need to change averaging bit-shifting
@@ -43,6 +44,17 @@ uint8_t brightRead(Strip *strip) {
 
     strip->brt = brightSum >> 8;
     return strip->brt;
+}
+
+// Prints brightness pot reading to the serial port
+// Useful for testing
+void brightPrint(uint8_t brightness) {
+    static uint32_t lastPrint = 0;
+    if (time_ms() - lastPrint > PRINT_TIME)	{
+        printf("%d", brightness);
+        printf("\n");
+        lastPrint = time_ms();
+    }  
 }
 
 //  To Do: a calibration via serial port for each end of the knob

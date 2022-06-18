@@ -51,22 +51,6 @@ const uint8_t gammaMatrix[2][256] =
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255}
 };
 
-// All pattern functions create a local copy of the Color structure so that RGB values can be modified for
-// correct brightness display. 
-// // Local function, always called from pattern functions.
-// // Modifies the local copy of Color for proper brightness display.
-// static inline void adjustBrightness(Color *brtadj) {
-//     // colors are multiplied by brightness %
-//     // brightness = 0-255, ">> 8" divides by 256
-//     uint8_t brtness = gammaMatrix[gammaCorr][brtadj->brt];
-//     uint32_t red = (brtadj->red * brtness) >> 8;
-//     uint32_t grn = (brtadj->grn * brtness) >> 8;
-//     uint32_t blu = (brtadj->blu * brtness) >> 8;
-//     brtadj->red = (uint8_t) red;
-//     brtadj->grn = (uint8_t) grn;
-//     brtadj->blu = (uint8_t) blu;
-// }
-
 // Order of Operations:
 // Strip info, an array of color values for the strip, and new Color value are passed into pattern functions
 // Pattern functions overwrite the array of color values for the strip
@@ -96,6 +80,18 @@ void showIt(Strip strip, Color stripColors[]) {
         Color adjustedColor = adjustBrightness(&stripColors[i], (uint8_t) strip.brt);
         put_pixel(urgb_u32((uint8_t) adjustedColor.red, (uint8_t) adjustedColor.grn, (uint8_t) adjustedColor.blu), strip.sm);
     }
+}
+
+// Prints the RGB values of a Color to the serial port
+// Used for testing encoder adjustment of color
+void printColor(Color color) {
+    printf("Red: %d  \tGrn: %d  \tBlu: %d\n", color.red, color.grn, color.blu);
+}
+
+// Prints the RGB values for each LED in the strip
+// Used as a Console Command
+void printStrip(Strip strip, Color stripColors[]) {
+    
 }
 
 // Loads a solid color into a strip of a given length
@@ -191,7 +187,6 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
     // }
 
-    
 //     // a decent RGB color wheel
 //     put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
 //     put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1

@@ -8,5 +8,6 @@
 
 uint8_t brightInit();
 uint8_t brightRead(Strip *strip);
+void brightPrint(uint8_t brightness);
 
 #endif

@@ -2,7 +2,7 @@
     Helpful general functions
 
 */
-
+#include <stdio.h>
 #include "utils.h"
 #include "palled.h"
 
@@ -21,5 +21,14 @@ void heartbeat() {
     if ( time_ms() - lastBlink > BLINK_TIME ) {
         gpio_xor_mask(1 << LED_PIN);
         lastBlink = time_ms();
+    }
+}
+
+// Hello World Serial Heartbeat
+void serialHeartbeat() {
+    static uint32_t lastPrint = 0;
+    if (time_ms() - lastPrint > PRINT_TIME)	{
+        printf("Hello World\n");
+        lastPrint = time_ms();
     }
 }
