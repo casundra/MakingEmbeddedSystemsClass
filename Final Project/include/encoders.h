@@ -15,9 +15,11 @@ typedef struct EncoderStruct {
 	volatile int8_t dir;
 } Encoder;
 
+
 void encoder_init(uint phasea, uint phaseb);
 uint8_t encoder_readA(Encoder *encoder);
 uint8_t encoder_readB(Encoder *encoder);
 uint8_t encoder_inc(Encoder *encoder);
+uint8_t encoder_print(int16_t lcounts, int16_t mcounts, int16_t rcounts, uint8_t update);
 
 #endif

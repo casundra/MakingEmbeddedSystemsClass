@@ -18,6 +18,8 @@
 #include "brightness.h"			// reads brightness from ADC, manipulates Color structure
 
 // Encoder Structures and ISR
+// To Do: make a structure of structures for encoders?  Or array?  
+// 		Make it easier to pass all encoder info to different functions?
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0};
 Encoder Left = {LEFTA, LEFTB, 0, 0, 0};
@@ -62,11 +64,10 @@ Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
 Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
-//enum colorState{RED, GRN, BLU};
 
 int main() {
 
-	// To Do: move initializations to other libs?
+	// To Do: move initializations to other libs so that main code is less Pico-specific?
 
 	// UART and onboard LED initialization
 	stdio_init_all();	// UART and UART to USB setup for both input and output
@@ -103,12 +104,19 @@ int main() {
 	while(1) 
 	{
 
-		// prints encoder position to serial port only when moved
-		static uint32_t lastPrintTime = 0;
-		if (enc_count_update) {
-			printf("Left: %d \tMiddle: %d\tRight: %d\n", Left.counts, Middle.counts, Right.counts);
-			enc_count_update = 0;
-		}
+		// Prints encoder position to serial port only when moved
+		uint8_t printEncoders = enc_count_update;
+		enc_count_update = encoder_print(Left.counts, Middle.counts, Right.counts, printEncoders);
+
+
+		ConsoleProcess();
+		heartbeat();
+
+		uint8_t brtness;
+		brtness = brightRead(&Matrix);
+		brtness = brightRead(&Ring);
+		showIt(Matrix, MatrixColors);
+		showIt(Ring, RingColors);
 
 		// // Hello World Serial Heartbeat
 		// static uint32_t lastPrint = 0;
@@ -117,57 +125,15 @@ int main() {
 		// 	lastPrint = time_ms();
 		// }
 
-		ConsoleProcess();
-		heartbeat();
-    	sleep_ms(2); 
-
-		uint8_t brtness;
-		brtness = brightRead(&Matrix);
-		brtness = brightRead(&Ring);
-		static uint32_t lastPrint = 0;
-		if (time_ms() - lastPrint > PRINT_TIME)	{
-			printf("%d", brtness);
-			printf("\n");
-			lastPrint = time_ms();
-		}
-		showIt(Matrix, MatrixColors);
-		showIt(Ring, RingColors);
-		//ringSolidColor(mainColor);
-		//ringInitRYB();
-		
-
-		// static enum colorState whichColor = RED;
-		// static uint32_t lastRingTime = 0;
-		// if (time_ms() - lastRingTime > 100) {
-		// 	switch(whichColor) {
-		// 		case RED: {
-		// 			if (mainColor.red >= 255) {
-		// 				mainColor.red = 0;
-		// 				whichColor = GRN;
-		// 			}
-		// 			else mainColor.red++;
-		// 			break;
-		// 		}
-		// 		case GRN: {
-		// 			if (mainColor.grn >= 255) {
-		// 				mainColor.grn = 0;
-		// 				whichColor = BLU;
-		// 			}
-		// 			else mainColor.grn++;
-		// 			break;
-		// 		}
-		// 		case BLU: {
-		// 			if (mainColor.blu >= 255) {
-		// 				mainColor.blu = 0;
-		// 				whichColor = RED;
-		// 			}
-		// 			else mainColor.blu++;
-		// 			break;
-		// 		}
-		// 	}
-		// 	ringSolidColor(mainColor);
-		// 	lastRingTime = time_ms();
+		// // Prints brightness pot reading out of serial port
+		// // debug/test
+		// static uint32_t lastPrint = 0;
+		// if (time_ms() - lastPrint > PRINT_TIME)	{
+		// 	printf("%d", brtness);
+		// 	printf("\n");
+		// 	lastPrint = time_ms();
 		// }
+
+		sleep_ms(2); // ensures minimum loop time
 	}	
-	sleep_ms(100);
 }

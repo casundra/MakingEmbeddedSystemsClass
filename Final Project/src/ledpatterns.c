@@ -109,31 +109,6 @@ void loadSolidColor(Strip strip, Color stripColors[], Color color) {
     showIt(strip, stripColors);
 }
 
-// void matrixMono(Color color) {
-//     Color initColor = color;
-//     adjustBrightness(&color);
-//     uint8_t rows = MATRIX_ROWS;
-//     uint8_t cols = MATRIX_COLS;
-//     uint8_t firstMonoPixel = (rows >> 1)*cols;
-//     uint8_t monoCols = cols >> 2;
-//     uint8_t monoRows = rows = (rows >> 1);
-//     for (uint8_t i = 0; i < firstMonoPixel; i++) {
-//          put_pixel(urgb_u32((uint8_t) color.red, (uint8_t) color.grn, (uint8_t) color.blu), MATRIX_SM);
-//     }
-//     for (uint8_t i = 0; i < monoRows; i++) {
-//         for (uint8_t j = 0; j < 4; j++) {
-//             for (uint8_t k = 0; k < monoCols; k++ ) {
-//                 uint8_t brtInit = color.brt *3;
-//                 uint8_t brtFactor = j*(color.brt);
-//                 uint32_t red = initColor.red * (brtInit - brtFactor) >> 8;
-//                 uint32_t grn = initColor.grn * (brtInit - brtFactor) >> 8;
-//                 uint32_t blu = initColor.blu * (brtInit - brtFactor) >> 8;
-//                 put_pixel(urgb_u32((uint8_t) red, (uint8_t) grn, (uint8_t) blu), MATRIX_SM); 
-//             }
-
-//         }
-//     }
-// }
 #define STEPS   (256 / RING_PIXELS)
 #define TRIAD1  (RING_PIXELS / 3)
 #define TRIAD2  (RING_PIXELS - TRIAD1)
