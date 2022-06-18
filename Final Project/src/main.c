@@ -65,6 +65,7 @@ Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
 Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
+enum deviceState {RGB_PICKER, COMPLEMENTARY};
 
 int main() {
 
@@ -105,18 +106,31 @@ int main() {
 	while(1) 
 	{
 
-		// Changes colors according to RGB knobs
-		if (enc_count_update) {
-			solidColor.red += Left.change;
-			Left.change = 0;
-			solidColor.grn += Middle.change;
-			Middle.change = 0;
-			solidColor.blu += Right.change;
-			Right.change = 0;
-			printColor(solidColor);
-			loadSolidColor(Matrix, MatrixColors, solidColor);
-			enc_count_update = 0;
+		// State Machine for palLED palette functions
+		static enum deviceState State = RGB_PICKER;
+		switch (State) {
+			case RGB_PICKER: {
+				if (enc_count_update) {
+					solidColor.red += Left.change;
+					Left.change = 0;
+					solidColor.grn += Middle.change;
+					Middle.change = 0;
+					solidColor.blu += Right.change;
+					Right.change = 0;
+					printColor(solidColor);
+					loadSolidColor(Matrix, MatrixColors, solidColor);
+					enc_count_update = 0;
+				}
+				break;
+			}
+			case COMPLEMENTARY: {
+
+				break;
+			}
 		}
+
+		// Changes colors according to RGB knobs
+
 
 		// Prints encoder position to serial port only when moved
 		// uint8_t printEncoders = enc_count_update;
@@ -135,9 +149,6 @@ int main() {
 		// End of Loop Housekeeping
 		ConsoleProcess();	// process serial commands
 		heartbeat(); 		// onboard LED blinking
-		sleep_ms(2); 		// ensures minimum loop time
+		sleep_ms(10); 		// ensures minimum loop time
 	}	
 }
-
-// Lots of questions about how to better integrate Console with code
-// Would like to be able to 

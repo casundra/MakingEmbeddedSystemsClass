@@ -154,6 +154,8 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 }
 
 
+
+
   // // a decent RYB color wheel
     // put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
     // put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
