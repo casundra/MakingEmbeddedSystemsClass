@@ -155,14 +155,23 @@ static eCommandResult_T ConsoleCommandVer(const char buffer[])
 	return result;
 }
 
+// To Do:
+// Implement so that "matrix" or "ring" or user-defined strip can be selected
+// Currently prints out both ring and matrix
 static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 {
 	eCommandResult_T result = COMMAND_SUCCESS;
 
 	ConsoleSendLine("RED, GREEN, BLUE are raw; RADJ, GADJ, BADJ are brightness-adjusted");
+
+	ConsoleIoSendString(STR_ENDLINE);
+	ConsoleIoSendString(STR_ENDLINE);
+
+
+	ConsoleSendLine("RING DATA:");
 	ConsoleIoSendString("Brightness Level (0-255): ");
-	ConsoleSendParamUint8(Matrix.brt);
-	ConsoleIoSendString(STR_ENDLINE);	
+	ConsoleSendParamUint8(Ring.brt);
+	ConsoleIoSendString(STR_ENDLINE);
 
 	uint8_t dataRowLength = sizeof (rgbHeader) / sizeof (rgbHeader[0]);
 	for (uint8_t i = 0; i < dataRowLength; i++) {
@@ -171,8 +180,42 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 	}
 	ConsoleIoSendString(STR_ENDLINE);	
 
-	Color adjMatrixColor = {0};
-	uint8_t dataTableLength = Matrix.len;
+	Color adjColor = {0};
+	uint8_t dataTableLength = Ring.len;
+	for (uint8_t i = 0; i < dataTableLength; i++) {	
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(RingColors[i].red);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(RingColors[i].grn);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(RingColors[i].blu);
+		ConsoleIoSendString("\t");
+		adjColor = adjustBrightness(&RingColors[i], Ring.brt);
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjColor.red);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjColor.grn);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjColor.blu);
+		ConsoleIoSendString(STR_ENDLINE);	
+	}
+	ConsoleIoSendString(STR_ENDLINE);
+
+
+	ConsoleSendLine("MATRIX DATA:");
+	ConsoleIoSendString("Brightness Level (0-255): ");
+	ConsoleSendParamUint8(Matrix.brt);
+	ConsoleIoSendString(STR_ENDLINE);
+
+	for (uint8_t i = 0; i < dataRowLength; i++) {
+		ConsoleIoSendString(rgbHeader[i]);
+		ConsoleIoSendString("\t");
+	}
+	ConsoleIoSendString(STR_ENDLINE);	
+
+	dataTableLength = Matrix.len;
 	for (uint8_t i = 0; i < dataTableLength; i++) {	
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
@@ -182,14 +225,14 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(MatrixColors[i].blu);
 		ConsoleIoSendString("\t");
-		adjMatrixColor = adjustBrightness(&MatrixColors[i], Matrix.brt);
+		adjColor = adjustBrightness(&MatrixColors[i], Matrix.brt);
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
-		ConsoleSendParamUint8(adjMatrixColor.red);
+		ConsoleSendParamUint8(adjColor.red);
 		ConsoleIoSendString("\t");
-		ConsoleSendParamUint8(adjMatrixColor.grn);
+		ConsoleSendParamUint8(adjColor.grn);
 		ConsoleIoSendString("\t");
-		ConsoleSendParamUint8(adjMatrixColor.blu);
+		ConsoleSendParamUint8(adjColor.blu);
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString("...and that's all, folks!");
