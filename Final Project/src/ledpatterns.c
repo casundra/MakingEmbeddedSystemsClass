@@ -187,8 +187,10 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
         stripColors[i].blu = wheelColors[type][i*3+2];
     }
     showIt(strip, stripColors);
+}
 
-    // // a decent RYB color wheel
+
+  // // a decent RYB color wheel
     // put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
     // put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
     // put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, PURPLE
@@ -206,6 +208,7 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     // put_pixel(urgb_u32(9, 2, 0), RING_SM);   // E
     // put_pixel(urgb_u32(10, 1, 0), RING_SM);  // F
 
+    // display RYB at approx 120 degrees
     // for (uint8_t i = 0; i < RING_PIXELS; i++) {
     //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
     //     else if (i == TRIAD1) put_pixel(urgb_u32(0, 0, 10), RING_SM);
@@ -213,9 +216,6 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
     // }
 
-}
-
-// void ringInitRGB () {
     
 //     // a decent RGB color wheel
 //     put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
@@ -234,12 +234,3 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 //     put_pixel(urgb_u32(5, 5, 0), RING_SM);   // D, YELLOW
 //     put_pixel(urgb_u32(7, 3, 0), RING_SM);   // E
 //     put_pixel(urgb_u32(9, 2, 0), RING_SM);   // F
-
-//     // for (uint8_t i = 0; i < RING_PIXELS; i++) {
-//     //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
-//     //     else if (i == TRIAD1) put_pixel(urgb_u32(0, 0, 10), RING_SM);
-//     //     else if (i == TRIAD2) put_pixel(urgb_u32(10, 10, 0), RING_SM);
-//     //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
-//     // }
-
-// }

@@ -13,13 +13,11 @@ typedef struct colorStruct {
     uint8_t blu;
 } Color;
 
-// display patterns
-void showIt(Strip strip, Color stripColors[]);
-void loadSolidColor(Strip strip, Color stripColors[], Color color); // single color
-void loadColorWheel (Strip strip, Color stripColors[], uint8_t type);
-//void matrixMono(Color color);   // single color with different brightnesses, doesn't work very well
-//void ringInitRYB ();    // RYB color wheel
-//void ringInitRGB ();    // RGB color wheel
+// outputs colors according to the values in the stripColors buffer, adjusts brightness first
+void showIt(Strip strip, Color stripColors[]);                          
 
+// loads colors into the stripColor buffer and shows them
+void loadSolidColor(Strip strip, Color stripColors[], Color color);     // any strip of any length
+void loadColorWheel (Strip strip, Color stripColors[], uint8_t type);   // wheel only, fixed 16 LEDs
 
 #endif
