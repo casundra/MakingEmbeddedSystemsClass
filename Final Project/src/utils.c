@@ -4,7 +4,7 @@
 */
 
 #include "utils.h"
-#include "pinout.h"
+#include "palled.h"
 
 uint32_t time_ms() {
     return to_ms_since_boot( get_absolute_time() );

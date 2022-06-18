@@ -9,8 +9,8 @@
 #include "hardware/adc.h"
 
 // application-specific libraries
+#include "palled.h"				// all pin definitions used in various functions are here
 #include "console.h"			// for the Serial I/O console (works over UART and USB)
-#include "pinout.h"				// all pin definitions used in various functions are here
 #include "utils.h"				// handy time and heartbeat code
 #include "encoders.h"			// driver for encoders
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
@@ -54,16 +54,22 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 }
 
 // Color Structures and Globals
-Color mainColor = {2, 0, 0, 255};
-Color matrixColor = {53, 0, 62, 5};
+Color mainColor = {2, 0, 0};
+Color solidColor = {53, 0, 62};
+Strip Matrix = {5, MATRIX_PIXELS, LED_MATRIX, MATRIX_SM};
+Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
+Color MatrixColors[MATRIX_PIXELS] = {0};
+Color RingColor[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
 //enum colorState{RED, GRN, BLU};
 
 int main() {
 
+	// To Do: move initializations to other libs?
+
 	// UART and onboard LED initialization
 	stdio_init_all();	// UART and UART to USB setup for both input and output
-	heartbeat_init();
+	heartbeat_init();	// onboard LED blinking
 
 	// Encoder initialization
 	encoder_init(RIGHTA, RIGHTB);
@@ -75,28 +81,31 @@ int main() {
 	PIO pio = pio0;
     uint offset_ring = pio_add_program(pio, &ws2812_program);
 	uint offset_matrix = pio_add_program(pio, &ws2812_program);
-	ws2812_program_init(pio, RING, offset_ring, LED_RING, 800000, RGB_ONLY);
-	ws2812_program_init(pio, MATRIX, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
+	ws2812_program_init(pio, RING_SM, offset_ring, LED_RING, 800000, RGB_ONLY);
+	ws2812_program_init(pio, MATRIX_SM, offset_matrix, LED_MATRIX, 800000, RGB_ONLY);
 
 	// ADC and Brightness initialization
 	adc_init();
 	adc_gpio_init(BRIGHT_POT);  // set up pin for analog input
 	adc_select_input(0);		// select which ADC channel to read
-	brightInit(&matrixColor);
+	brightInit();				// loads buffer with 1s of brightness pot readings
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
 	ConsoleInit();
+
+	// Packs some Color arrays
+	matrixSolidColor(solidColor, Matrix, MatrixColors);
 
 
 	while(1) 
 	{
 
+		// prints encoder position to serial port only when moved
 		static uint32_t lastPrintTime = 0;
 		if (enc_count_update) {
 			printf("Left: %d \tMiddle: %d\tRight: %d\n", Left.counts, Middle.counts, Right.counts);
 			enc_count_update = 0;
 		}
-
 
 		// // Hello World Serial Heartbeat
 		// static uint32_t lastPrint = 0;
@@ -110,16 +119,16 @@ int main() {
     	sleep_ms(2); 
 
 		uint8_t brtness;
-		brtness = brightRead(&matrixColor);
+		brtness = brightRead(&Matrix);
 		static uint32_t lastPrint = 0;
 		if (time_ms() - lastPrint > PRINT_TIME)	{
 			printf("%d", brtness);
 			printf("\n");
 			lastPrint = time_ms();
 		}
-		matrixSolidColor(matrixColor);
+		showIt(Matrix, MatrixColors);
 		//ringSolidColor(mainColor);
-		ringInitRGB();
+		ringInitRYB();
 		
 
 		// static enum colorState whichColor = RED;

@@ -15,15 +15,15 @@
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
 #include "ws2812.pio.h"
-#include "pinout.h"
+#include "palled.h"
 
 // Strip Types
 #define RGB_ONLY    0
 #define RGB_WHITE   1
 
 // State Machine instances for Ring and Matrix
-#define RING         0
-#define MATRIX       1
+#define RING_SM         0
+#define MATRIX_SM       1
 
 static inline void put_pixel(uint32_t pixel_grb, uint8_t strip) {
     pio_sm_put_blocking(pio0, strip, pixel_grb << 8u);

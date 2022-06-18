@@ -14,7 +14,7 @@ static uint16_t *pBright = &Brightness[0];
 
 // Loads brightness values into array and returns average
 // Sleep time is calculated so it takes ~ 1s
-uint8_t brightInit(Color *color) {
+uint8_t brightInit() {
     uint16_t brightNow = 0;
     uint32_t brightSum = 0;
     for (uint8_t i = 0; i < BRTLEN; i++) {
@@ -30,7 +30,7 @@ uint8_t brightInit(Color *color) {
 // Places the new brightness average into Color structure to be output to LEDs
 // Also returns the average
 // This might be a brute force inelegant buffer, but it's easy for me to write & understand.
-uint8_t brightRead(Color *color) {
+uint8_t brightRead(Strip *strip) {
     uint16_t brightNow = adc_read();
     *pBright = brightNow;
     uint32_t brightSum = 0;
@@ -41,8 +41,8 @@ uint8_t brightRead(Color *color) {
     if (pBright >= &Brightness[0] + BRTLEN) pBright = &Brightness[0];
     else pBright++;
 
-    color->brt = brightSum >> 8;
-    return color->brt;
+    strip->brt = brightSum >> 8;
+    return strip->brt;
 }
 
 //  To Do: a calibration via serial port for each end of the knob

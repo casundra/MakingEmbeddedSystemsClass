@@ -1,4 +1,7 @@
-/* Pinout specific to palLED Pico board */
+/* palLED setup specific to RPi Pico board */
+
+#ifndef PALLED_H
+#define PALLED_H
 
 #include "pico/stdlib.h"
 
@@ -33,3 +36,13 @@
 #define RING_PIXELS     16
 #define MATRIX_ROWS     8
 #define MATRIX_COLS     8
+#define MATRIX_PIXELS   (MATRIX_ROWS * MATRIX_COLS)
+
+typedef struct stripStruct {
+    uint8_t brt;
+    uint8_t len;
+    uint8_t pin;
+    uint8_t sm;
+} Strip;
+
+#endif
