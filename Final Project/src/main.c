@@ -57,7 +57,7 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 
 // Color Structures and Globals
 Color mainColor = {2, 0, 0};
-Color solidColor = {0, 0, 0};
+Color solidColor = {192, 64, 23};
 //Color solidColor = {53, 0, 62};
 Color solidColor2 = {0, 53, 62};
 Strip Matrix = {5, MATRIX_PIXELS, LED_MATRIX, MATRIX_SM};
@@ -69,6 +69,7 @@ uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used i
 int main() {
 
 	// To Do: move initializations to other libs so that main code is less Pico-specific?
+	// 			ex: the single line ConsoleInit();
 
 	// UART and onboard LED initialization
 	stdio_init_all();	// UART and UART to USB setup for both input and output
@@ -91,10 +92,10 @@ int main() {
 	adc_init();
 	adc_gpio_init(BRIGHT_POT);  // set up pin for analog input
 	adc_select_input(0);		// select which ADC channel to read
-	brightInit();				// loads buffer with 1s of brightness pot readings
+	brightInit();				// loads buffer with 1 second of brightness pot readings
 
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
-	ConsoleInit();
+	ConsoleInit();		// initializes the serial console command interface
 
 	// Packs some Color arrays
 	loadSolidColor(Matrix, MatrixColors, solidColor);
@@ -121,9 +122,6 @@ int main() {
 		// uint8_t printEncoders = enc_count_update;
 		// enc_count_update = encoder_print(Left.counts, Middle.counts, Right.counts, printEncoders);
 
-		// Changes colors according to encoder changes
-		
-
 		// Reads brightness setting from pot and adjusts LED output
 		uint8_t brtness;
 		brtness = brightRead(&Matrix);
@@ -140,3 +138,6 @@ int main() {
 		sleep_ms(2); 		// ensures minimum loop time
 	}	
 }
+
+// Lots of questions about how to better integrate Console with code
+// Would like to be able to 

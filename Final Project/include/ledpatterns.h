@@ -3,15 +3,13 @@
 
 #include "pico/stdlib.h"
 #include "ws2812.h"
+#include "palled.h"
 
 #define RYB 0
 #define RGB 1
 
-typedef struct colorStruct {
-    uint8_t red;
-    uint8_t grn;
-    uint8_t blu;
-} Color;
+// Takes in an array of Colors and returns the array with brightness-adjusted values
+Color adjustBrightness(Color *color, uint8_t brtness);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          

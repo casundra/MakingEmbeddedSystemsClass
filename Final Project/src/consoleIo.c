@@ -39,13 +39,15 @@ eConsoleError ConsoleIoInit(void)
 	return CONSOLE_SUCCESS;
 }
 
-// This is modified for the Wokwi RPi Pico simulator. It works fine 
-// but that's partially because the serial terminal sends all of the 
-// characters at a time without losing any of them. What if this function
-// wasn't called fast enough?
+// Modified to run on USB UART interface on RPi Pico.
+// Elecia's original code was specific to hardware UART pins.
 eConsoleError ConsoleIoReceive(uint8_t *buffer, const uint32_t bufferLength, uint32_t *readLength)
 {
-	// original code
+	// Elecia's original code:
+	// This is modified for the Wokwi RPi Pico simulator. It works fine 
+	// but that's partially because the serial terminal sends all of the 
+	// characters at a time without losing any of them. What if this function
+	// wasn't called fast enough?
 	// uint32_t i = 0;
 	// char ch;
 

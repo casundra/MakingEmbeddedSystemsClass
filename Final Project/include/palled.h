@@ -45,4 +45,16 @@ typedef struct stripStruct {
     uint8_t sm;
 } Strip;
 
+typedef struct colorStruct {
+    uint8_t red;
+    uint8_t grn;
+    uint8_t blu;
+} Color;
+
+// included here so that other modules like Console can access Strip and strip Color data
+extern Strip Matrix;
+extern Strip Ring;
+extern Color MatrixColors[];
+extern Color RingColors[];
+
 #endif

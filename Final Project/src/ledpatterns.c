@@ -2,10 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ledpatterns.h"
+#include "console.h"
 
-// To Do:
-// - 
-
+// from main.c
 extern uint8_t gammaCorr;
 
 // gammaMatrix is a lookup table for brightness that corrects for our eyeballs' non-linear perception of brightness
@@ -60,7 +59,7 @@ const uint8_t gammaMatrix[2][256] =
 
 // Local function, called inside of show
 // Returns a brightness-adjusted single Color
-static Color adjustBrightness(Color *color, uint8_t brtness) {
+Color adjustBrightness(Color *color, uint8_t brtness) {
     // colors are multiplied by brightness %
     // brightness = 0-255, ">> 8" divides by 256
     uint32_t grn = (color->grn * brtness) >> 8;
@@ -86,12 +85,6 @@ void showIt(Strip strip, Color stripColors[]) {
 // Used for testing encoder adjustment of color
 void printColor(Color color) {
     printf("Red: %d  \tGrn: %d  \tBlu: %d\n", color.red, color.grn, color.blu);
-}
-
-// Prints the RGB values for each LED in the strip
-// Used as a Console Command
-void printStrip(Strip strip, Color stripColors[]) {
-    
 }
 
 // Loads a solid color into a strip of a given length

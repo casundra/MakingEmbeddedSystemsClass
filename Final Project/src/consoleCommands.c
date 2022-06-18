@@ -41,7 +41,9 @@
 #include "consoleIo.h"
 #include "version.h"
 #include "data.h"
+#include "ledpatterns.h"
 #include "brightness.h"
+#include "palled.h"
 
 #define IGNORE_UNUSED_VARIABLE(x)     if ( &x == &x ) {}
 
@@ -51,7 +53,7 @@ static eCommandResult_T ConsoleCommandHelp(const char buffer[]);
 static eCommandResult_T ConsoleCommandParamExampleInt16(const char buffer[]);
 static eCommandResult_T ConsoleCommandParamExampleUint8(const char buffer []);
 static eCommandResult_T ConsoleCommandParamExampleHexUint16(const char buffer[]);
-static eCommandResult_T ConsoleCommandData(const char buffer[]);
+static eCommandResult_T ConsoleCommandPrint(const char buffer[]);
 
 static const sConsoleCommandTable_T mConsoleCommandTable[] =
 {
@@ -59,9 +61,9 @@ static const sConsoleCommandTable_T mConsoleCommandTable[] =
     {"help", &ConsoleCommandHelp, HELP("Lists the commands available")},
     {"ver", &ConsoleCommandVer, HELP("Get the version string")},
     {"int", &ConsoleCommandParamExampleInt16, HELP("How to get a signed int16 from params list: int -321")},
-		{"uint8", &ConsoleCommandParamExampleUint8, HELP("How to get an unsigned uint8 from params list: uint8 123")},
+	{"uint8", &ConsoleCommandParamExampleUint8, HELP("How to get an unsigned uint8 from params list: uint8 123")},
     {"u16h", &ConsoleCommandParamExampleHexUint16, HELP("How to get a hex u16 from the params list: u16h aB12")},
-		{"data", &ConsoleCommandData, HELP("Dumps some RGB data")},
+	{"print", &ConsoleCommandPrint, HELP("Dumps individual LED RGB data")},
 
 	CONSOLE_COMMAND_TABLE_END // must be LAST
 };
@@ -153,9 +155,14 @@ static eCommandResult_T ConsoleCommandVer(const char buffer[])
 	return result;
 }
 
-static eCommandResult_T ConsoleCommandData(const char buffer[])
+static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 {
 	eCommandResult_T result = COMMAND_SUCCESS;
+
+	ConsoleSendLine("RED, GREEN, BLUE are raw; RADJ, GADJ, BADJ are brightness-adjusted");
+	ConsoleIoSendString("Brightness Level (0-255): ");
+	ConsoleSendParamUint8(Matrix.brt);
+	ConsoleIoSendString(STR_ENDLINE);	
 
 	uint8_t dataRowLength = sizeof (rgbHeader) / sizeof (rgbHeader[0]);
 	for (uint8_t i = 0; i < dataRowLength; i++) {
@@ -164,12 +171,25 @@ static eCommandResult_T ConsoleCommandData(const char buffer[])
 	}
 	ConsoleIoSendString(STR_ENDLINE);	
 
-	uint8_t dataTableLength = sizeof (rgb) / sizeof (rgb[0]);
-	for (uint8_t i = 0; i < dataTableLength; i++) {
-		for (uint8_t j = 0; j < dataRowLength; j++){
-			ConsoleSendParamUint8(rgb[i][j]);
-			ConsoleIoSendString("\t");
-		}
+	Color adjMatrixColor = {0};
+	uint8_t dataTableLength = Matrix.len;
+	for (uint8_t i = 0; i < dataTableLength; i++) {	
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(MatrixColors[i].red);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(MatrixColors[i].grn);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(MatrixColors[i].blu);
+		ConsoleIoSendString("\t");
+		adjMatrixColor = adjustBrightness(&MatrixColors[i], Matrix.brt);
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjMatrixColor.red);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjMatrixColor.grn);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(adjMatrixColor.blu);
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString("...and that's all, folks!");
