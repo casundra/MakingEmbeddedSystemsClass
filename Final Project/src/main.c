@@ -56,10 +56,11 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 // Color Structures and Globals
 Color mainColor = {2, 0, 0};
 Color solidColor = {53, 0, 62};
+Color solidColor2 = {0, 53, 62};
 Strip Matrix = {5, MATRIX_PIXELS, LED_MATRIX, MATRIX_SM};
 Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
-Color RingColor[RING_PIXELS] = {0};
+Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
 //enum colorState{RED, GRN, BLU};
 
@@ -94,7 +95,9 @@ int main() {
 	ConsoleInit();
 
 	// Packs some Color arrays
-	matrixSolidColor(solidColor, Matrix, MatrixColors);
+	loadSolidColor(Matrix, MatrixColors, solidColor);
+	loadColorWheel(Ring, RingColors, RGB);
+
 
 
 	while(1) 
@@ -120,6 +123,7 @@ int main() {
 
 		uint8_t brtness;
 		brtness = brightRead(&Matrix);
+		brtness = brightRead(&Ring);
 		static uint32_t lastPrint = 0;
 		if (time_ms() - lastPrint > PRINT_TIME)	{
 			printf("%d", brtness);
@@ -127,8 +131,9 @@ int main() {
 			lastPrint = time_ms();
 		}
 		showIt(Matrix, MatrixColors);
+		showIt(Ring, RingColors);
 		//ringSolidColor(mainColor);
-		ringInitRYB();
+		//ringInitRYB();
 		
 
 		// static enum colorState whichColor = RED;

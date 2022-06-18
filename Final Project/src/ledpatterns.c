@@ -89,6 +89,8 @@ static Color adjustBrightness(Color *color, uint8_t brtness) {
     return adjColor;
 }
 
+// Shows the colors loaded in stripColors on the physical strip
+// Adjusts for brightness just before
 void showIt(Strip strip, Color stripColors[]) {
     for (uint8_t i = 0; i < strip.len; i++) {
         Color adjustedColor = adjustBrightness(&stripColors[i], (uint8_t) strip.brt);
@@ -96,15 +98,9 @@ void showIt(Strip strip, Color stripColors[]) {
     }
 }
 
-// void ringSolidColor(Color color) {
-//     adjustBrightness(&color);
-//     uint8_t numLEDs = RING_PIXELS;
-//     for (uint8_t i = 0; i < numLEDs; i++) {
-//         put_pixel(urgb_u32((uint8_t) color.red, (uint8_t) color.grn, (uint8_t) color.blu), RING_SM);
-//     }
-// }
-
-void matrixSolidColor(Color color, Strip strip, Color stripColors[]) {
+// Loads a solid color into a strip of a given length
+// Also shows because why not
+void loadSolidColor(Strip strip, Color stripColors[], Color color) {
     for (uint8_t i = 0; i < strip.len; i++) {
         stripColors[i].red = color.red;
         stripColors[i].grn = color.grn;
@@ -142,25 +138,73 @@ void matrixSolidColor(Color color, Strip strip, Color stripColors[]) {
 #define TRIAD1  (RING_PIXELS / 3)
 #define TRIAD2  (RING_PIXELS - TRIAD1)
 
-void ringInitRYB () {
+const uint8_t wheelColors[][48] = {
+    { // RYB
+    200,0,0,
+    200,0,20,
+    100,0,100,
+    60,0,140,
+    20,0,200,
+    0,0,240,
+    0,40,160,
+    0,140,60,
+    0,200,0,
+    20,200,0,
+    60,140,0,
+    100,100,0,
+    100,80,0,
+    160,80,0,
+    180,40,0,
+    200,20,0,
+    }, 
+    { // RGB      
+    200,0,0,
+    200,0,20,
+    100,0,100,
+    60,0,140,
+    20,0,200,
+    0,0,240,
+    0,20,200,
+    0,40,160,
+    0,80,100,
+    0,120,80,
+    0,160,40,
+    0,200,0,
+    40,140,0,
+    100,100,0,
+    140,60,0,
+    180,40,0,
+    }
+};
+
+// assumes a fixed 16 LED wheel
+// To Do: make dynamic based off of wheel size
+void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     
-    // a decent RYB color wheel
-    put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
-    put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
-    put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, PURPLE
-    put_pixel(urgb_u32(3, 0, 7), RING_SM);   // 3
-    put_pixel(urgb_u32(1, 0, 10), RING_SM);  // 4
-    put_pixel(urgb_u32(0, 0, 12), RING_SM);  // 5, BLUE
-    put_pixel(urgb_u32(0, 2, 8), RING_SM);   // 6
-    put_pixel(urgb_u32(0, 7, 3), RING_SM);   // 7
-    put_pixel(urgb_u32(0, 10, 0), RING_SM);  // 8, GREEN
-    put_pixel(urgb_u32(1, 10, 0), RING_SM);  // 9
-    put_pixel(urgb_u32(3, 7, 0), RING_SM);   // A
-    put_pixel(urgb_u32(5, 5, 0), RING_SM);   // B, YELLOW
-    put_pixel(urgb_u32(5, 4, 0), RING_SM);   // C
-    put_pixel(urgb_u32(8, 4, 0), RING_SM);   // D, ORANGE
-    put_pixel(urgb_u32(9, 2, 0), RING_SM);   // E
-    put_pixel(urgb_u32(10, 1, 0), RING_SM);  // F
+    for (uint8_t i = 0; i < strip.len; i++) {
+        stripColors[i].red = wheelColors[type][i*3];
+        stripColors[i].grn = wheelColors[type][i*3+1];
+        stripColors[i].blu = wheelColors[type][i*3+2];
+    }
+    showIt(strip, stripColors);
+
+    // // a decent RYB color wheel
+    // put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
+    // put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
+    // put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, PURPLE
+    // put_pixel(urgb_u32(3, 0, 7), RING_SM);   // 3
+    // put_pixel(urgb_u32(1, 0, 10), RING_SM);  // 4
+    // put_pixel(urgb_u32(0, 0, 12), RING_SM);  // 5, BLUE
+    // put_pixel(urgb_u32(0, 2, 8), RING_SM);   // 6
+    // put_pixel(urgb_u32(0, 7, 3), RING_SM);   // 7
+    // put_pixel(urgb_u32(0, 10, 0), RING_SM);  // 8, GREEN
+    // put_pixel(urgb_u32(1, 10, 0), RING_SM);  // 9
+    // put_pixel(urgb_u32(3, 7, 0), RING_SM);   // A
+    // put_pixel(urgb_u32(5, 5, 0), RING_SM);   // B, YELLOW
+    // put_pixel(urgb_u32(5, 4, 0), RING_SM);   // C
+    // put_pixel(urgb_u32(8, 4, 0), RING_SM);   // D, ORANGE
+    // put_pixel(urgb_u32(9, 2, 0), RING_SM);   // E
+    // put_pixel(urgb_u32(10, 1, 0), RING_SM);  // F
 
     // for (uint8_t i = 0; i < RING_PIXELS; i++) {
     //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
@@ -171,31 +215,31 @@ void ringInitRYB () {
 
 }
 
-void ringInitRGB () {
+// void ringInitRGB () {
     
-    // a decent RGB color wheel
-    put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
-    put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
-    put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, MAGENTA
-    put_pixel(urgb_u32(3, 0, 7), RING_SM);   // 3
-    put_pixel(urgb_u32(1, 0, 10), RING_SM);  // 4
-    put_pixel(urgb_u32(0, 0, 12), RING_SM);  // 5, BLUE
-    put_pixel(urgb_u32(0, 1, 10), RING_SM);   // 6
-    put_pixel(urgb_u32(0, 2, 8), RING_SM);   // 7
-    put_pixel(urgb_u32(0, 4, 5), RING_SM);   // 8, CYAN
-    put_pixel(urgb_u32(0, 6, 4), RING_SM);   // 9
-    put_pixel(urgb_u32(0, 8, 2), RING_SM);   // A
-    put_pixel(urgb_u32(0, 10, 0), RING_SM);  // B, GREEN
-    put_pixel(urgb_u32(2, 7, 0), RING_SM);   // C
-    put_pixel(urgb_u32(5, 5, 0), RING_SM);   // D, YELLOW
-    put_pixel(urgb_u32(7, 3, 0), RING_SM);   // E
-    put_pixel(urgb_u32(9, 2, 0), RING_SM);   // F
+//     // a decent RGB color wheel
+//     put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
+//     put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
+//     put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, MAGENTA
+//     put_pixel(urgb_u32(3, 0, 7), RING_SM);   // 3
+//     put_pixel(urgb_u32(1, 0, 10), RING_SM);  // 4
+//     put_pixel(urgb_u32(0, 0, 12), RING_SM);  // 5, BLUE
+//     put_pixel(urgb_u32(0, 1, 10), RING_SM);   // 6
+//     put_pixel(urgb_u32(0, 2, 8), RING_SM);   // 7
+//     put_pixel(urgb_u32(0, 4, 5), RING_SM);   // 8, CYAN
+//     put_pixel(urgb_u32(0, 6, 4), RING_SM);   // 9
+//     put_pixel(urgb_u32(0, 8, 2), RING_SM);   // A
+//     put_pixel(urgb_u32(0, 10, 0), RING_SM);  // B, GREEN
+//     put_pixel(urgb_u32(2, 7, 0), RING_SM);   // C
+//     put_pixel(urgb_u32(5, 5, 0), RING_SM);   // D, YELLOW
+//     put_pixel(urgb_u32(7, 3, 0), RING_SM);   // E
+//     put_pixel(urgb_u32(9, 2, 0), RING_SM);   // F
 
-    // for (uint8_t i = 0; i < RING_PIXELS; i++) {
-    //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
-    //     else if (i == TRIAD1) put_pixel(urgb_u32(0, 0, 10), RING_SM);
-    //     else if (i == TRIAD2) put_pixel(urgb_u32(10, 10, 0), RING_SM);
-    //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
-    // }
+//     // for (uint8_t i = 0; i < RING_PIXELS; i++) {
+//     //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
+//     //     else if (i == TRIAD1) put_pixel(urgb_u32(0, 0, 10), RING_SM);
+//     //     else if (i == TRIAD2) put_pixel(urgb_u32(10, 10, 0), RING_SM);
+//     //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
+//     // }
 
-}
+// }
