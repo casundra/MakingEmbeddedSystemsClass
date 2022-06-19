@@ -16,8 +16,9 @@ typedef struct EncoderStruct {
 	volatile int8_t dir;
 } Encoder;
 
-
+// see .c file for full comments on each function
 void encoder_init(uint phasea, uint phaseb);
+void button_init(uint pin);
 uint8_t encoder_readA(Encoder *encoder);
 uint8_t encoder_readB(Encoder *encoder);
 uint8_t encoder_inc(Encoder *encoder);

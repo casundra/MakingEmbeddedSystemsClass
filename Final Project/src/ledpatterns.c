@@ -62,9 +62,10 @@ const uint8_t gammaMatrix[2][256] =
 Color adjustBrightness(Color *color, uint8_t brtness) {
     // colors are multiplied by brightness %
     // brightness = 0-255, ">> 8" divides by 256
-    uint32_t grn = (color->grn * brtness) >> 8;
-    uint32_t red = (color->red * brtness) >> 8;
-    uint32_t blu = (color->blu * brtness) >> 8;
+    uint8_t gammaBright = gammaMatrix[gammaCorr][brtness];
+    uint32_t grn = (color->grn * gammaBright) >> 8;
+    uint32_t red = (color->red * gammaBright) >> 8;
+    uint32_t blu = (color->blu * gammaBright) >> 8;
     Color adjColor;
     adjColor.red = (uint8_t) red;
     adjColor.grn = (uint8_t) grn;
@@ -94,6 +95,27 @@ void loadSolidColor(Strip strip, Color stripColors[], Color color) {
         stripColors[i].red = color.red;
         stripColors[i].grn = color.grn;
         stripColors[i].blu = color.blu;
+    }
+    showIt(strip, stripColors);
+}
+
+// To Do:
+// Figure out the split if a matrix has an odd number of rows or cols
+// or is rectangular, would be nice to not change in the middle of a row
+
+// Loads half the strip with the active color and half with its complement
+void loadComplement(Strip strip, Color stripColors[], Color color) {
+    uint8_t halfStrip = strip.len >> 1;
+    for (uint8_t i = 0; i < halfStrip; i++) {
+        stripColors[i].red = color.red;
+        stripColors[i].grn = color.grn;
+        stripColors[i].blu = color.blu;
+    }
+
+    for (uint8_t i = halfStrip; i < strip.len; i++) {
+        stripColors[i].red = 255 - color.red;
+        stripColors[i].grn = 255 - color.grn;
+        stripColors[i].blu = 255 - color.blu;
     }
     showIt(strip, stripColors);
 }

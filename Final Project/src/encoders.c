@@ -22,6 +22,17 @@ void encoder_init(uint phasea, uint phaseb) {
     gpio_set_irq_enabled(phaseb, GPIO_IRQ_EDGE_FALL, 1);
 }
 
+// for now buttons are part of the encoders
+// (push down on stalk)
+// sets them as inputs with pullups and irqs enabled
+void button_init(uint pin) {
+    gpio_init(pin);
+    gpio_set_dir(pin, GPIO_IN);
+    gpio_pull_up(pin);
+    sleep_ms(10);
+    gpio_set_irq_enabled(pin, GPIO_IRQ_EDGE_FALL, 1);
+}
+
 // Since the RP2040 doesn't have both edge interrupt capability,
 // we have to read Phase A on rising edge interrupt and 
 // Phase B on a falling edge interrupt.  With both, we can get

@@ -18,7 +18,8 @@ void showIt(Strip strip, Color stripColors[]);
 void printColor(Color color);
 
 // loads colors into the stripColor buffer and shows them
-void loadSolidColor(Strip strip, Color stripColors[], Color color);     // any strip of any length
+void loadSolidColor(Strip strip, Color stripColors[], Color color);     // one solid color for entire strip
+void loadComplement(Strip strip, Color stripColors[], Color color);     // half active color, half complement
 void loadColorWheel (Strip strip, Color stripColors[], uint8_t type);   // wheel only, fixed 16 LEDs
 
 #endif

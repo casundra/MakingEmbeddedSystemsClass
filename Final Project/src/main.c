@@ -56,10 +56,8 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 }
 
 // Color Structures and Globals
-Color mainColor = {2, 0, 0};
-Color solidColor = {192, 64, 23};
-//Color solidColor = {53, 0, 62};
-Color solidColor2 = {0, 53, 62};
+Color activeColor = {255, 0, 0};
+Color solidColor = {0, 53, 62};
 Strip Matrix = {5, MATRIX_PIXELS, LED_MATRIX, MATRIX_SM};
 Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
@@ -75,6 +73,9 @@ int main() {
 	// UART and onboard LED initialization
 	stdio_init_all();	// UART and UART to USB setup for both input and output
 	heartbeat_init();	// onboard LED blinking
+	
+	// Button initialization
+	button_init(MODE_BUTT);
 
 	// Encoder initialization
 	encoder_init(RIGHTA, RIGHTB);
@@ -99,7 +100,7 @@ int main() {
 	ConsoleInit();		// initializes the serial console command interface
 
 	// Packs some Color arrays
-	loadSolidColor(Matrix, MatrixColors, solidColor);
+	loadSolidColor(Matrix, MatrixColors, activeColor);
 	loadColorWheel(Ring, RingColors, RGB);
 
 
@@ -107,24 +108,31 @@ int main() {
 	{
 
 		// State Machine for palLED palette functions
-		static enum deviceState State = RGB_PICKER;
+		static enum deviceState State = COMPLEMENTARY;
 		switch (State) {
 			case RGB_PICKER: {
 				if (enc_count_update) {
-					solidColor.red += Left.change;
+					// To Do:
+					// break out into separate function & file
+					// handle full on/full off wrapping?  It's kind of handy for testing
+					activeColor.red += Left.change;
 					Left.change = 0;
-					solidColor.grn += Middle.change;
+					activeColor.grn += Middle.change;
 					Middle.change = 0;
-					solidColor.blu += Right.change;
+					activeColor.blu += Right.change;
 					Right.change = 0;
-					printColor(solidColor);
-					loadSolidColor(Matrix, MatrixColors, solidColor);
+					printColor(activeColor);
+					loadSolidColor(Matrix, MatrixColors, activeColor);
 					enc_count_update = 0;
 				}
 				break;
 			}
 			case COMPLEMENTARY: {
-
+				loadComplement(Matrix, MatrixColors, activeColor);
+				Left.change = 0;		// makes sure encoders do nothing and don't retain changed settings
+				Middle.change = 0;
+				Right.change = 0;
+				enc_count_update = 0;
 				break;
 			}
 		}
@@ -143,7 +151,7 @@ int main() {
 		showIt(Matrix, MatrixColors);
 		showIt(Ring, RingColors);
 
-
+		brightPrint(Matrix.brt);
 
 
 		// End of Loop Housekeeping
