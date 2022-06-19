@@ -126,7 +126,7 @@ void loadComplement(Strip strip, Color stripColors[], Color color) {
 #define TRIAD2  (RING_PIXELS - TRIAD1)
 
 const uint8_t wheelColors[][48] = {
-    { // RYB
+    { // RYB hand adjusted
     200,0,0,
     200,0,20,
     100,0,100,
@@ -144,7 +144,27 @@ const uint8_t wheelColors[][48] = {
     180,40,0,
     200,20,0,
     }, 
-    { // RGB      
+
+    // { // RGB perfectly even angles but looks bad   
+    // 255,0,0,
+    // 255,94,0,
+    // 255,191,0,
+    // 255,255,0,
+    // 128,255,0,
+    // 34,255,0,
+    // 0,255,64,
+    // 0,255,157,
+    // 0,255,255,
+    // 0,162,255,
+    // 0,64,255,
+    // 30,0,255,
+    // 128,0,255,
+    // 221,0,255,
+    // 255,0,191,
+    // 255,0,98,
+    // }
+
+    { // RGB hand adjusted    
     200,0,0,
     200,0,20,
     100,0,100,
