@@ -12,7 +12,7 @@
 Color adjustBrightness(Color color, uint8_t brtness);
 
 // Takes in an RGB Color and returns an HSL Color
-Color rgb2hsl (Color color);
+HSL rgb2hsl (Color color);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          

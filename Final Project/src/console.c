@@ -46,6 +46,7 @@
 
 #define NOT_FOUND		-1
 #define UINT8_MAX_STR_LENGTH 5
+#define UINT16_MAX_STR_LENGTH 7
 #define INT16_MAX_STR_LENGTH 8 // -65534: six characters plus a two NULLs
 #define INT32_MAX_STR_LENGTH 16
 #define NULL_CHAR            '\0'
@@ -457,6 +458,20 @@ eCommandResult_T ConsoleSendParamUint8(uint8_t parameterInt)
 	return COMMAND_SUCCESS;
 }
 
+// ConsoleSendParamUint8
+// Send a parameter of type uint8_t using the (unsafe) C library function
+// itoa to translate from integer to string.
+eCommandResult_T ConsoleSendParamUint16(uint16_t parameterInt)
+{
+	char out[UINT16_MAX_STR_LENGTH];
+//	memset(out, 0, UINT16_MAX_STR_LENGTH);
+
+	itoa (parameterInt, out, 10);
+	ConsoleIoSendString(out);
+
+	return COMMAND_SUCCESS;
+}
+
 // ConsoleSendParamInt16
 // Send a parameter of type int16 using the (unsafe) C library function
 // itoa to translate from integer to string.
@@ -536,6 +551,7 @@ static eCommandResult_T ConsoleUtilsIntToHexChar(uint8_t intVal, char* pChar)
 
     return result;
 }
+
 // ConsoleSendString
 // Send a null terminated string to the console.
 // This is a light wrapper around ConsoleIoSendString. It uses the same

@@ -66,6 +66,7 @@ typedef enum {
 eCommandResult_T ConsoleReceiveParamInt16(const char * buffer, const uint8_t parameterNumber, int16_t* parameterInt16);
 eCommandResult_T ConsoleReceiveParamUint8(const char * buffer, const uint8_t parameterNumber, uint8_t* parameterUint8);
 eCommandResult_T ConsoleSendParamUint8(uint8_t parameterInt);
+eCommandResult_T ConsoleSendParamUint16(uint16_t parameterInt);
 eCommandResult_T ConsoleSendParamInt16(int16_t parameterInt);
 eCommandResult_T ConsoleSendParamInt32(int32_t parameterInt);
 eCommandResult_T ConsoleReceiveParamHexUint16(const char * buffer, const uint8_t parameterNumber, uint16_t* parameterUint16);

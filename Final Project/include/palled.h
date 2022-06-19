@@ -51,6 +51,12 @@ typedef struct colorStruct {
     uint8_t blu;
 } Color;
 
+typedef struct hslStruct {
+    uint16_t hue;
+    float sat;
+    float lum;
+} HSL;
+
 // included here so that other modules like Console can access Strip and strip Color data
 extern Strip Matrix;
 extern Strip Ring;

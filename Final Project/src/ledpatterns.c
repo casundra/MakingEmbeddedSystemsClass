@@ -188,19 +188,19 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 // https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
 // hue is basically the color in degrees around the color wheel
-Color rgb2hsl (Color color) {
+HSL rgb2hsl (Color color) {
 
-    Color hslColor = {0};
+    HSL hslColor = {0};
 
-    float red = color.red / 255;
-    float grn = color.grn / 255;
-    float blu = color.blu / 255;
+    float red = (float) color.red / 255;
+    float grn = (float) color.grn / 255;
+    float blu = (float) color.blu / 255;
     float maxrg = fmaxf(red, grn);
     float maxgb = fmaxf(grn, blu);
     float maxmax = fmaxf(maxrg, maxgb);
     float minrg = fminf(red, grn);
     float mingb = fminf(grn, blu);
-    float minmin = (minrg, mingb);
+    float minmin = fminf(minrg, mingb);
     float lumin = (maxmax + minmin) / 2;
 
     float satur;
@@ -211,23 +211,23 @@ Color rgb2hsl (Color color) {
     float hue;
     if ( (color.red == color.grn) && (color.grn == color.blu) ) {
         hue = 0;
-        hslColor.red = (uint8_t) hue;
-        hslColor.grn = (uint8_t) satur;
-        hslColor.blu = (uint8_t) lumin;
+        hslColor.hue = (uint16_t) hue;
+        hslColor.sat = satur;
+        hslColor.lum = lumin;
         return hslColor;
     }
 
     if (maxmax == red)      hue = (grn - blu) / (maxmax - minmin);
-    else if (maxmax == grn) hue = 2.0 + (blu - grn) / (maxmax - minmin);    // 2.09 is 120 deg in radians?
+    else if (maxmax == grn) hue = 2.0 + (blu - red) / (maxmax - minmin);    // 2.09 is 120 deg in radians?
     else                    hue = 4.0 + (red - grn) / (maxmax - minmin);    // 4.19 is 240 deg in radians?
 
     hue *= 60;
     if (hue < 0) hue += 360;
-    else if (hue >= 360) hue -= 360;
+    //if (hue >= 360) hue -= 360;
 
-    hslColor.red = (uint8_t) hue;
-    hslColor.grn = (uint8_t) satur;
-    hslColor.blu = (uint8_t) lumin;
+    hslColor.hue = (uint16_t) hue;
+    hslColor.sat = satur;
+    hslColor.lum = lumin;
     return hslColor;
 }
 
