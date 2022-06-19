@@ -5,6 +5,10 @@
 #include "ledpatterns.h"
 #include "console.h"
 
+// To Do:
+// Break out color transformations & gamma into their own .h/.c pair?
+// Keep this file for generating the patterns that are displayed on the strips?
+
 // from main.c
 extern uint8_t gammaCorr;
 
@@ -198,24 +202,24 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 
 // The following is for RGB to HSL colorspace transformation.
 // This is needed to get the appropriate position of a color around the wheel.
+// Hue is essentially the position in degrees of the color.
 // I'm initially going to throw caution to the wind and do it all floating point
 // because I have cycles to buuuuuuuuuurn, bitcheeeeeees!  If I have time, 
 // I'll profile this and then switch to integer math and see if there's a
-// big time difference.  I'd do it by toggling an output at the beginning and 
-// end of the transformation and measuring it with a scope.
+// big time difference.  
 
-// the following algorithm is from:
+// The following algorithm is from:
 // Nikolai Waldman
 // https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
-// hue is basically the color in degrees around the color wheel
+// To Do:
+// Refactor to multiply by 1000 and use all integer math
+// Proper rounding
 HSL rgb2hsl (Color color) {
 
     HSL hslColor = {0};
 
     // Calculates max and min
-    // To Do: 
-    // Refactor to multiple by 1000 first, and not have to deal with floating point
     float red = (float) color.red / 255;
     float grn = (float) color.grn / 255;
     float blu = (float) color.blu / 255;
@@ -227,7 +231,7 @@ HSL rgb2hsl (Color color) {
     float minmin = fminf(minrg, mingb);
 
     // Calculate luminesence
-    float lumin = (maxmax + minmin) / 2;
+    float lumin = (maxmax + minmin) / 2.0;
 
     // Calculate Saturation
     float satur;
@@ -249,8 +253,8 @@ HSL rgb2hsl (Color color) {
     else if (maxmax == grn) hue = 2.0 + (blu - red) / (maxmax - minmin);    // 2.09 is 120 deg in radians?
     else                    hue = 4.0 + (red - grn) / (maxmax - minmin);    // 4.19 is 240 deg in radians?
 
-    hue *= 60;
-    if (hue < 0) hue += 360;
+    hue *= 60.0;
+    if (hue < 0) hue += 360.0;
 
     // Pack HSL into the HSL structure
     hslColor.hue = (uint16_t) hue;
@@ -261,24 +265,34 @@ HSL rgb2hsl (Color color) {
 }
 
 // Helper function for hsl2rgb
-// Calculates intermediate terms for red, green, blue
+// Calculates intermediate terms for a single color
+// Called for red, green, and blue
 static float hslCalcColor (float colorInt, float lI1, float lI2) {
     float color = 0;
     if ( (6.0 * colorInt) < 1)        color = lI2 + (lI1 - lI2) * 6.0 * colorInt;
     else if ( (2.0 * colorInt) < 1)   color = lI1;
     else if ( (3.0 * colorInt) < 2)   color = lI2 + (lI1 - lI2) * (0.666 - colorInt) * 6.0;
-    else                            color = lI2;
+    else                              color = lI2;
     return color;
 }
+
+
+// Transforms a color from HSL space back to RGB
+
+// the following algorithm is also from:
+// Nikolai Waldman
+// https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
 // To Do: 
 // Refactor to not use floating point
 // Properly round up/down
+// Transforming to hsl and back to rgb results in +/-2 due to rounding error
 Color hsl2rgb (HSL hslColor) {
 
     Color color = {0};
     float fred, fgrn, fblu = 0;
 
+    // Check for a shade of white
     if (hslColor.sat == 0) {
         float rgb = hslColor.lum * 255;
         color.red = (uint8_t) rgb;
@@ -287,14 +301,17 @@ Color hsl2rgb (HSL hslColor) {
         return color;
     }
 
+    // Intermediate luminesence terms
     float lumInt1, lumInt2 = 0;
     if (hslColor.lum < 0.5) lumInt1 = hslColor.lum * (1.0 + hslColor.sat);
     else lumInt1 = hslColor.lum + hslColor.sat - (hslColor.lum * hslColor.sat);
  
     lumInt2 = (2.0 * hslColor.lum) - lumInt1;
 
+    // Hue back to radians
     float hue = hslColor.hue / 360.0;
 
+    // Intermediate rgb terms
     float rInt, gInt, bInt = 0;
     rInt = hue + 0.333;
     if (rInt > 1) rInt -= 1.0;
@@ -302,41 +319,15 @@ Color hsl2rgb (HSL hslColor) {
     bInt = hue - 0.333;
     if (bInt < 0) bInt += 1.0;
 
+    // Calculate rgb depending on intermediate terms
     fred = hslCalcColor(rInt, lumInt1, lumInt2);
     fgrn = hslCalcColor(gInt, lumInt1, lumInt2);
     fblu = hslCalcColor(bInt, lumInt1, lumInt2);
-
-    // printf("\nlumInt1: ");
-    // printf("%f\n", lumInt1);
-    // printf("lumInt2: ");
-    // printf("%f\n", lumInt2);
-    // printf("hue: ");
-    // printf("%f\n", hue); 
-    // printf("rInt: ");
-    // printf("%f\n", rInt);
-    // printf("gInt: ");
-    // printf("%f\n", gInt);
-    // printf("bInt: ");
-    // printf("%f\n", bInt);
-    // printf("fred: ");
-    // printf("%f\n", fred);
-    // printf("fgrn: ");
-    // printf("%f\n", fgrn);
-    // printf("fblu: ");
-    // printf("%f\n", fblu);
-
     fred *= 255.0;
     fgrn *= 255.0;
     fblu *= 255.0;
 
-    // printf("fred: ");
-    // printf("%f\n", fred);
-    // printf("fgrn: ");
-    // printf("%f\n", fgrn);
-    // printf("fblu: ");
-    // printf("%f\n", fblu);
-
-
+    // Pack RGB into the Color structure
     color.red = (uint8_t) fred;
     color.grn = (uint8_t) fgrn;
     color.blu = (uint8_t) fblu;
