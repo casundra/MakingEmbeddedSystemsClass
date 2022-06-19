@@ -191,7 +191,7 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(RingColors[i].blu);
 		ConsoleIoSendString("\t");
-		adjColor = adjustBrightness(&RingColors[i], Ring.brt);
+		adjColor = adjustBrightness(RingColors[i], Ring.brt);
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(adjColor.red);
@@ -225,7 +225,7 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(MatrixColors[i].blu);
 		ConsoleIoSendString("\t");
-		adjColor = adjustBrightness(&MatrixColors[i], Matrix.brt);
+		adjColor = adjustBrightness(MatrixColors[i], Matrix.brt);
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(adjColor.red);

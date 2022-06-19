@@ -42,3 +42,7 @@ Excellent step by step process from this article:
 https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
 Will have to figure out how to convert it to a RYB HSL colorspace since that's more inline with color theory complementary/adjacent teachings.
+
+Also, it would have been smart to use an LED ring that's a multiple of 12 - 3 for displaying triads and even RGB/RYB splits, and 4 for tetrads.
+
+Is it better to call a function 64 times in a row inside a for loop, or to call a function once and have it loop 64 times internally?

@@ -8,8 +8,11 @@
 #define RYB 0
 #define RGB 1
 
-// Takes in an array of Colors and returns the array with brightness-adjusted values
-Color adjustBrightness(Color *color, uint8_t brtness);
+// Takes in a Color and returns it with brightness-adjusted values
+Color adjustBrightness(Color color, uint8_t brtness);
+
+// Takes in an RGB Color and returns an HSL Color
+Color rgb2hsl (Color color);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          

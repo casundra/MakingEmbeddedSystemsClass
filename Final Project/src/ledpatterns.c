@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "ledpatterns.h"
 #include "console.h"
 
@@ -59,13 +60,13 @@ const uint8_t gammaMatrix[2][256] =
 
 // Local function, called inside of show
 // Returns a brightness-adjusted single Color
-Color adjustBrightness(Color *color, uint8_t brtness) {
+Color adjustBrightness(Color color, uint8_t brtness) {
     // colors are multiplied by brightness %
     // brightness = 0-255, ">> 8" divides by 256
     uint8_t gammaBright = gammaMatrix[gammaCorr][brtness];
-    uint32_t grn = (color->grn * gammaBright) >> 8;
-    uint32_t red = (color->red * gammaBright) >> 8;
-    uint32_t blu = (color->blu * gammaBright) >> 8;
+    uint32_t grn = (color.grn * gammaBright) >> 8;
+    uint32_t red = (color.red * gammaBright) >> 8;
+    uint32_t blu = (color.blu * gammaBright) >> 8;
     Color adjColor;
     adjColor.red = (uint8_t) red;
     adjColor.grn = (uint8_t) grn;
@@ -77,7 +78,7 @@ Color adjustBrightness(Color *color, uint8_t brtness) {
 // Adjusts for brightness just before
 void showIt(Strip strip, Color stripColors[]) {
     for (uint8_t i = 0; i < strip.len; i++) {
-        Color adjustedColor = adjustBrightness(&stripColors[i], (uint8_t) strip.brt);
+        Color adjustedColor = adjustBrightness(stripColors[i], (uint8_t) strip.brt);
         put_pixel(urgb_u32((uint8_t) adjustedColor.red, (uint8_t) adjustedColor.grn, (uint8_t) adjustedColor.blu), strip.sm);
     }
 }
@@ -175,7 +176,60 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     showIt(strip, stripColors);
 }
 
+// The following is for RGB to HSL colorspace transformation.
+// This is needed to get the appropriate position of a color around the wheel.
+// I'm initially going to throw caution to the wind and do it all floating point
+// because I have cycles to buuuuuuuuuurn, bitcheeeeeees!  If I have time, 
+// I'll profile this and then switch to integer math and see if there's a
+// big time difference.  I'd do it by toggling an output at the beginning and 
+// end of the transformation and measuring it with a scope.
 
+// the following algorithm is from:
+// https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
+
+// hue is basically the color in degrees around the color wheel
+Color rgb2hsl (Color color) {
+
+    Color hslColor = {0};
+
+    float red = color.red / 255;
+    float grn = color.grn / 255;
+    float blu = color.blu / 255;
+    float maxrg = fmaxf(red, grn);
+    float maxgb = fmaxf(grn, blu);
+    float maxmax = fmaxf(maxrg, maxgb);
+    float minrg = fminf(red, grn);
+    float mingb = fminf(grn, blu);
+    float minmin = (minrg, mingb);
+    float lumin = (maxmax + minmin) / 2;
+
+    float satur;
+    if (maxmax == minmin) satur = 0;
+    else if (lumin <= 0.5) satur = (maxmax - minmin) / (maxmax + minmin);
+    else satur = (maxmax - minmin) / (2.0 - maxmax - minmin);
+
+    float hue;
+    if ( (color.red == color.grn) && (color.grn == color.blu) ) {
+        hue = 0;
+        hslColor.red = (uint8_t) hue;
+        hslColor.grn = (uint8_t) satur;
+        hslColor.blu = (uint8_t) lumin;
+        return hslColor;
+    }
+
+    if (maxmax == red)      hue = (grn - blu) / (maxmax - minmin);
+    else if (maxmax == grn) hue = 2.0 + (blu - grn) / (maxmax - minmin);    // 2.09 is 120 deg in radians?
+    else                    hue = 4.0 + (red - grn) / (maxmax - minmin);    // 4.19 is 240 deg in radians?
+
+    hue *= 60;
+    if (hue < 0) hue += 360;
+    else if (hue >= 360) hue -= 360;
+
+    hslColor.red = (uint8_t) hue;
+    hslColor.grn = (uint8_t) satur;
+    hslColor.blu = (uint8_t) lumin;
+    return hslColor;
+}
 
 
   // // a decent RYB color wheel
