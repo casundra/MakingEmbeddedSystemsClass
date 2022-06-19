@@ -205,6 +205,7 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 // end of the transformation and measuring it with a scope.
 
 // the following algorithm is from:
+// Nikolai Waldman
 // https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
 // hue is basically the color in degrees around the color wheel
@@ -259,6 +260,16 @@ HSL rgb2hsl (Color color) {
     return hslColor;
 }
 
+// Helper function for hsl2rgb
+// Calculates intermediate terms for red, green, blue
+static float hslCalcColor (float colorInt, float lI1, float lI2) {
+    float color = 0;
+    if ( (6.0 * colorInt) < 1)        color = lI2 + (lI1 - lI2) * 6.0 * colorInt;
+    else if ( (2.0 * colorInt) < 1)   color = lI1;
+    else if ( (3.0 * colorInt) < 2)   color = lI2 + (lI1 - lI2) * (0.666 - colorInt) * 6.0;
+    else                            color = lI2;
+    return color;
+}
 
 // To Do: 
 // Refactor to not use floating point
@@ -266,54 +277,73 @@ HSL rgb2hsl (Color color) {
 Color hsl2rgb (HSL hslColor) {
 
     Color color = {0};
-    float red, grn, blu = 0;
+    float fred, fgrn, fblu = 0;
 
-    if (hsl.sat == 0) {
-        uint8_t rgb = hsl.lum * 255;
-        color.red = rgb;
-        color.grn = rgb;
-        color.blu = rgb;
+    if (hslColor.sat == 0) {
+        float rgb = hslColor.lum * 255;
+        color.red = (uint8_t) rgb;
+        color.grn = (uint8_t) rgb;
+        color.blu = (uint8_t) rgb;
         return color;
     }
 
     float lumInt1, lumInt2 = 0;
-    if (hsl.lum < 0.5) lumInt1 = hsl.lum * (1 + hsl.sat);
-    else lumInt1 = hsl.lum + hsl.sat - (hsl.lum * hsl.sat);
+    if (hslColor.lum < 0.5) lumInt1 = hslColor.lum * (1.0 + hslColor.sat);
+    else lumInt1 = hslColor.lum + hslColor.sat - (hslColor.lum * hslColor.sat);
+ 
+    lumInt2 = (2.0 * hslColor.lum) - lumInt1;
 
-    lumInt2 = (2 * hsl.lum) - lumInt1;
-
-    hsl.hue /= 360;
+    float hue = hslColor.hue / 360.0;
 
     float rInt, gInt, bInt = 0;
-    rInt = hsl.hue + 0.333;
-    if (rInt > 1) rInt -= 1;
-    gInt = hsl.hue;
-    bInt = hsl.hue - 0.333;
-    if (bInt < 1) bInt += 1;
+    rInt = hue + 0.333;
+    if (rInt > 1) rInt -= 1.0;
+    gInt = hue;
+    bInt = hue - 0.333;
+    if (bInt < 0) bInt += 1.0;
 
-    red = hslCalcColor(rInt, lI1, lI2);
-    grn = hslCalcColor(gInt, lI1, lI2);
-    blu = hslCalcColor(bInt, lI1, lI2);
+    fred = hslCalcColor(rInt, lumInt1, lumInt2);
+    fgrn = hslCalcColor(gInt, lumInt1, lumInt2);
+    fblu = hslCalcColor(bInt, lumInt1, lumInt2);
 
-    red *= 255;
-    grn *= 255;
-    blu *= 255;
+    // printf("\nlumInt1: ");
+    // printf("%f\n", lumInt1);
+    // printf("lumInt2: ");
+    // printf("%f\n", lumInt2);
+    // printf("hue: ");
+    // printf("%f\n", hue); 
+    // printf("rInt: ");
+    // printf("%f\n", rInt);
+    // printf("gInt: ");
+    // printf("%f\n", gInt);
+    // printf("bInt: ");
+    // printf("%f\n", bInt);
+    // printf("fred: ");
+    // printf("%f\n", fred);
+    // printf("fgrn: ");
+    // printf("%f\n", fgrn);
+    // printf("fblu: ");
+    // printf("%f\n", fblu);
 
-    color.red = (uint8_t) red;
-    color.grn = (uint8_t) grn;
-    color.blu - (uint8_t) blu;
+    fred *= 255.0;
+    fgrn *= 255.0;
+    fblu *= 255.0;
+
+    // printf("fred: ");
+    // printf("%f\n", fred);
+    // printf("fgrn: ");
+    // printf("%f\n", fgrn);
+    // printf("fblu: ");
+    // printf("%f\n", fblu);
+
+
+    color.red = (uint8_t) fred;
+    color.grn = (uint8_t) fgrn;
+    color.blu = (uint8_t) fblu;
 
     return color;
 }
 
-float hslCalcColor (float colorInt, float lI1, float lI2) {
-    float color = 0;
-    if ( (6 * colorInt) < 1)        color = lI2 + (lI1 - lI2) * 6 * colorInt;
-    else if ( (2 * colorInt) < 1)   color = lI1;
-    else if ( (3 * colorInt) < 2)   color = lI2 + (lI1 - lI2) * (0.666 - colorInt) * 6;
-    else                            color = lI2;
-    return color;
-}
 
 
   // // a decent RYB color wheel

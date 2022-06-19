@@ -185,6 +185,7 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 
 	Color adjColor = {0};
 	HSL hslColor = {0};
+	Color rgbColor = {0};
 	char floatStr[8] = {"\0"};
 	uint8_t dataTableLength = Ring.len;
 	for (uint8_t i = 0; i < dataTableLength; i++) {	
@@ -213,6 +214,15 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 		printf("%f", hslColor.sat);
 		ConsoleIoSendString("\t");
 		printf("%f", hslColor.lum);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		rgbColor = hsl2rgb(hslColor);
+		printf("%d", rgbColor.red);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.grn);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.blu);		
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString(STR_ENDLINE);
@@ -256,6 +266,15 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 		printf("%f", hslColor.sat);
 		ConsoleIoSendString("\t");
 		printf("%f", hslColor.lum);
+		ConsoleIoSendString("\t");
+		rgbColor = hsl2rgb(hslColor);
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.red);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.grn);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.blu);	
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString("...and that's all, folks!");
@@ -268,7 +287,7 @@ static eCommandResult_T ConsoleCommandTest(const char buffer[])
 {
 	eCommandResult_T result = COMMAND_SUCCESS;
 
-		ConsoleSendLine("TEST DATA:");
+	ConsoleSendLine("TEST DATA:");
 	ConsoleIoSendString("Brightness Level (0-255): ");
 	ConsoleSendParamUint8(Ring.brt);
 	ConsoleIoSendString(STR_ENDLINE);
@@ -282,9 +301,10 @@ static eCommandResult_T ConsoleCommandTest(const char buffer[])
 
 	Color adjColor = {0};
 	HSL hslColor = {0};
+	Color rgbColor = {0};
 	char floatStr[8] = {"\0"};
 	uint8_t dataTableLength = Ring.len;
-	for (uint8_t i = 0; i < 1; i++) {	
+	for (uint8_t i = 0; i < dataTableLength; i++) {	
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(RingColors[i].red);
@@ -302,14 +322,23 @@ static eCommandResult_T ConsoleCommandTest(const char buffer[])
 		ConsoleIoSendString("\t");
 		ConsoleSendParamUint8(adjColor.blu);	
 		ConsoleIoSendString("\t");
-		hslColor = rgb2hsl(adjColor);
+		hslColor = rgb2hsl(RingColors[i]);
 		ConsoleSendParamUint8(i);
 		ConsoleIoSendString("\t");
 		printf("%d", hslColor.hue);
 		ConsoleIoSendString("\t");
-		printf("%4f", hslColor.sat);
+		printf("%f", hslColor.sat);
 		ConsoleIoSendString("\t");
-		printf("%4f", hslColor.lum);
+		printf("%f", hslColor.lum);
+		ConsoleIoSendString("\t");
+		ConsoleSendParamUint8(i);
+		ConsoleIoSendString("\t");
+		rgbColor = hsl2rgb(hslColor);
+		printf("%d", rgbColor.red);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.grn);
+		ConsoleIoSendString("\t");
+		printf("%d", rgbColor.blu);		
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString(STR_ENDLINE);
