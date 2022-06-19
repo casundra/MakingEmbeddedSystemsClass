@@ -41,6 +41,9 @@ Haha oh shit maths.  I really didn't think this whole color wheel aspect through
 Excellent step by step process from this article:
 https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 
+Interesting about color wheels:
+https://bahamas10.github.io/ryb/about.html
+
 Will have to figure out how to convert it to a RYB HSL colorspace since that's more inline with color theory complementary/adjacent teachings.  Ah.  Should just be able to bracket which angles correspond to which LEDs differently, no problem.
 
 Also, it would have been smart to use an LED ring that's a multiple of 12 - 3 for displaying triads and even RGB/RYB splits, and 4 for tetrads.

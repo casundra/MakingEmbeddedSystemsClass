@@ -11,9 +11,12 @@
 // Takes in a Color and returns it with brightness-adjusted values
 Color adjustBrightness(Color color, uint8_t brtness);
 
-// Takes in an RGB Color and returns an HSL Color
+// Transformations between RGB and HSL color spaces for Hue/Wheel Angle calculation
 HSL rgb2hsl (Color color);
 Color hsl2rgb (HSL hslColor);
+
+// Determines which LED is closest to the active color on the color wheel
+uint8_t activeLED (Strip strip, Color color, uint8_t type);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          

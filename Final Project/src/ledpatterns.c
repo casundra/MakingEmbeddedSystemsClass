@@ -149,46 +149,46 @@ const uint8_t wheelColors[][48] = {
     200,20,0,
     }, 
 
-    // { // RGB perfectly even angles but looks bad   
-    // 255,0,0,
-    // 255,94,0,
-    // 255,191,0,
-    // 255,255,0,
-    // 128,255,0,
-    // 34,255,0,
-    // 0,255,64,
-    // 0,255,157,
-    // 0,255,255,
-    // 0,162,255,
-    // 0,64,255,
-    // 30,0,255,
-    // 128,0,255,
-    // 221,0,255,
-    // 255,0,191,
-    // 255,0,98,
-    // }
-
-    { // RGB hand adjusted    
-    200,0,0,
-    200,0,20,
-    100,0,100,
-    60,0,140,
-    20,0,200,
-    0,0,240,
-    0,20,200,
-    0,40,160,
-    0,80,100,
-    0,120,80,
-    0,160,40,
-    0,200,0,
-    40,140,0,
-    100,100,0,
-    140,60,0,
-    180,40,0,
+    { // RGB perfectly even angles but looks bad   
+    255,0,0,
+    255,94,0,
+    255,191,0,
+    255,255,0,
+    128,255,0,
+    34,255,0,
+    0,255,64,
+    0,255,157,
+    0,255,255,
+    0,162,255,
+    0,64,255,
+    30,0,255,
+    128,0,255,
+    221,0,255,
+    255,0,191,
+    255,0,98,
     }
+
+    // { // RGB hand adjusted    
+    // 200,0,0,
+    // 200,0,20,
+    // 100,0,100,
+    // 60,0,140,
+    // 20,0,200,
+    // 0,0,240,
+    // 0,20,200,
+    // 0,40,160,
+    // 0,80,100,
+    // 0,120,80,
+    // 0,160,40,
+    // 0,200,0,
+    // 40,140,0,
+    // 100,100,0,
+    // 140,60,0,
+    // 180,40,0,
+    // }
 };
 
-// assumes a fixed 16 LED wheel
+// assumes a fixed 16 LED wheel, uses above matrices
 // To Do: make dynamic based off of wheel size
 void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     
@@ -200,6 +200,51 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     showIt(strip, stripColors);
 }
 
+
+// Returns which LED should be lit on the color wheel, according to RGB color passed in,
+//  number of LEDs in the wheel, and type of color wheel (RYB vs RGB)
+// RGB is evenly spaced around the color wheel, theoretically
+// My handmade color RGB color wheel isn't quite even, but we'll cross that bridge later.
+// Likely due to how colors in WS2812s appear to our eyes.
+
+// To Do:
+// Maybe refactor to get rid of floating point?
+// Can't just truncate, otherwise errors add around the wheel.
+// However, we've decided hue will always be an integer.
+uint8_t activeLED (Strip strip, Color color, uint8_t type) {
+
+    // Calculates LED angle
+    float angle = 360.0 / strip.len;
+
+    // Transforms RGB to HSL space
+    HSL hslColor = rgb2hsl(color);
+    float hue = hslColor.hue;
+
+    switch (type) {
+        case RYB: {
+            // yellow basically takes the place of green at 120 deg on the color wheel equilateral triangle
+            // expands red to yellow space so hues 0-60 are displayed at 0-120 degrees (2x)
+            // compresses green to blue space so hues 60-240 are displayed at 120-240 degrees ()
+            // no change for blue to red space
+            if (hue < 60)       hue = hue * 2.0;                // color is between red and yellow
+            else if (hue < 120) hue = hue * (2.0 / 3.0) + 80;   // color is between yellow and blue
+
+            hue += angle / 2.0;             // same as below
+            if (hue > 360) hue -= 360;      // 
+            hue /= angle;                   // 
+            break;
+        }
+        case RGB: {
+            hue += angle / 2.0;             // adds a half LED step to the hue angle since LEDs are in the middle of the pie pieces
+            if (hue > 360) hue -= 360;      // corrects for very end of circle / last LED
+            hue /= angle;                   // calculates the LED number
+            break;
+        }
+    }
+
+    return (uint8_t) hue;
+}
+
 // The following is for RGB to HSL colorspace transformation.
 // This is needed to get the appropriate position of a color around the wheel.
 // Hue is essentially the position in degrees of the color.
@@ -208,6 +253,9 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 // I'll profile this and then switch to integer math and see if there's a
 // big time difference.  
 
+// After more reading, I think HSV would be a better colorspace to use and might
+// change the structure and algorithms in the future
+
 // The following algorithm is from:
 // Nikolai Waldman
 // https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
@@ -215,6 +263,7 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
 // To Do:
 // Refactor to multiply by 1000 and use all integer math
 // Proper rounding
+// Investigate HSV colorspace instead of HSL
 HSL rgb2hsl (Color color) {
 
     HSL hslColor = {0};
@@ -279,7 +328,7 @@ static float hslCalcColor (float colorInt, float lI1, float lI2) {
 
 // Transforms a color from HSL space back to RGB
 
-// the following algorithm is also from:
+// The following algorithm is also from:
 // Nikolai Waldman
 // https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 

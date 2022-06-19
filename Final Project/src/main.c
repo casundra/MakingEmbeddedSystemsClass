@@ -111,7 +111,7 @@ int main() {
 
 
 	// Packs some Color arrays
-	loadColorWheel(Ring, RingColors, RGB);
+	loadColorWheel(Ring, RingColors, RYB);
 	enum deviceState State = COMPLEMENTARY;
 
 

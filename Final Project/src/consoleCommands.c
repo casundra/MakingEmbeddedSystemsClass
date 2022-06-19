@@ -186,7 +186,6 @@ static eCommandResult_T ConsoleCommandPrint(const char buffer[])
 	Color adjColor = {0};
 	HSL hslColor = {0};
 	Color rgbColor = {0};
-	char floatStr[8] = {"\0"};
 	uint8_t dataTableLength = Ring.len;
 	for (uint8_t i = 0; i < dataTableLength; i++) {	
 		ConsoleSendParamUint8(i);
@@ -302,7 +301,7 @@ static eCommandResult_T ConsoleCommandTest(const char buffer[])
 	Color adjColor = {0};
 	HSL hslColor = {0};
 	Color rgbColor = {0};
-	char floatStr[8] = {"\0"};
+	uint8_t lednum = 0;
 	uint8_t dataTableLength = Ring.len;
 	for (uint8_t i = 0; i < dataTableLength; i++) {	
 		ConsoleSendParamUint8(i);
@@ -338,7 +337,10 @@ static eCommandResult_T ConsoleCommandTest(const char buffer[])
 		ConsoleIoSendString("\t");
 		printf("%d", rgbColor.grn);
 		ConsoleIoSendString("\t");
-		printf("%d", rgbColor.blu);		
+		printf("%d", rgbColor.blu);	
+		ConsoleIoSendString("\t");
+		lednum = activeLED(Ring, RingColors[i], RYB);
+		printf("%d", lednum);
 		ConsoleIoSendString(STR_ENDLINE);	
 	}
 	ConsoleIoSendString(STR_ENDLINE);

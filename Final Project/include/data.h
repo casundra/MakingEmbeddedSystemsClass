@@ -10,7 +10,7 @@
 #ifndef DATA_H
 #define DATA_H
 
-const char *rgbHeader[] = {"LED#", "RED", "GREEN", "BLUE", "LED#", "RADJ", "GADJ", "BADJ", "LED#", "HUE", "SAT\t", "LUM\t", "LED#", "RED", "GREEN", "BLUE"};
+const char *rgbHeader[] = {"LED#", "RED", "GREEN", "BLUE", "LED#", "RADJ", "GADJ", "BADJ", "LED#", "HUE", "SAT\t", "LUM\t", "LED#", "RED", "GREEN", "BLUE", "LEDNUM"};
 
 // uint8_t rgb[4][3] = 
 // {
