@@ -16,6 +16,7 @@
 #include "ws2812.h"				// driver for WS2812 addressable LED strips
 #include "ledpatterns.h"		// creates LED patterns using the WS2812 driver
 #include "brightness.h"			// reads brightness from ADC, manipulates Color structure
+#include "version.h"			// holds version string
 
 // Encoder Structures and ISR
 // To Do: make a structure of structures for encoders?  Or array?  
@@ -101,8 +102,13 @@ int main() {
 	adc_select_input(0);		// select which ADC channel to read
 	brightInit();				// loads buffer with 1 second of brightness pot readings
 
-	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating output
+	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating Console
+	printf("What rolls downs stairs, alone or in pairs, runs over your over neighbor's dog?\n");
+	printf("What's great for a snack and fits on your back, it's ");
+	printf(VERSION_STRING);
+	printf("!\n");
 	ConsoleInit();		// initializes the serial console command interface
+
 
 	// Packs some Color arrays
 	loadColorWheel(Ring, RingColors, RGB);
