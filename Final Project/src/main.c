@@ -23,7 +23,8 @@
 Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0, 0};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0, 0};
 Encoder Left = {LEFTA, LEFTB, 0, 0, 0, 0};
-volatile uint8_t enc_count_update = 0;
+volatile uint8_t enc_count_update = 0;		// encoder count update flag
+volatile uint8_t butt_date = 0; 			// button update flag
 
 void isr_gpio_callback(uint gpio, uint32_t events) {
 
@@ -50,6 +51,10 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 		}
 		case LEFTB: {
 			enc_count_update = encoder_readB(&Left);
+			break;
+		}
+		case MODE_BUTT: {
+			butt_date = button_read(MODE_BUTT);
 			break;
 		}
 	}
@@ -100,17 +105,24 @@ int main() {
 	ConsoleInit();		// initializes the serial console command interface
 
 	// Packs some Color arrays
-	loadSolidColor(Matrix, MatrixColors, activeColor);
 	loadColorWheel(Ring, RingColors, RGB);
+	enum deviceState State = COMPLEMENTARY;
 
 
 	while(1) 
 	{
 
+		// Checks for State change
+		if (butt_date) {
+			State += 1;
+			State %= 2;
+			butt_date = 0;
+		}
+
 		// State Machine for palLED palette functions
-		static enum deviceState State = COMPLEMENTARY;
 		switch (State) {
 			case RGB_PICKER: {
+				loadSolidColor(Matrix, MatrixColors, activeColor);
 				if (enc_count_update) {
 					// To Do:
 					// break out into separate function & file
@@ -137,7 +149,6 @@ int main() {
 			}
 		}
 
-		// Changes colors according to RGB knobs
 
 
 		// Prints encoder position to serial port only when moved
@@ -150,9 +161,6 @@ int main() {
 		Ring.brt = brtness;
 		showIt(Matrix, MatrixColors);
 		showIt(Ring, RingColors);
-
-		brightPrint(Matrix.brt);
-
 
 		// End of Loop Housekeeping
 		ConsoleProcess();	// process serial commands

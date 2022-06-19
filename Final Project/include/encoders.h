@@ -19,6 +19,7 @@ typedef struct EncoderStruct {
 // see .c file for full comments on each function
 void encoder_init(uint phasea, uint phaseb);
 void button_init(uint pin);
+uint8_t button_read(uint8_t pin);
 uint8_t encoder_readA(Encoder *encoder);
 uint8_t encoder_readB(Encoder *encoder);
 uint8_t encoder_inc(Encoder *encoder);

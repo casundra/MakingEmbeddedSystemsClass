@@ -33,6 +33,13 @@ void button_init(uint pin) {
     gpio_set_irq_enabled(pin, GPIO_IRQ_EDGE_FALL, 1);
 }
 
+// reads the button
+// it is also debounced in hardware, bitches!
+uint8_t button_read(uint8_t pin) {
+    uint8_t butt_state = gpio_get(pin);
+    return !butt_state;
+}
+
 // Since the RP2040 doesn't have both edge interrupt capability,
 // we have to read Phase A on rising edge interrupt and 
 // Phase B on a falling edge interrupt.  With both, we can get
