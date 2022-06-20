@@ -69,7 +69,7 @@ Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
 Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
-enum deviceState {RGB_PICKER, COMPLEMENTARY};
+enum deviceState {RGB_PICKER1, RGB_PICKER2, COMPLEMENTARY};
 
 int main() {
 
@@ -111,8 +111,7 @@ int main() {
 
 
 	// Packs some Color arrays
-	loadColorWheel(Ring, RingColors, RYB);
-	enum deviceState State = COMPLEMENTARY;
+	enum deviceState State = RGB_PICKER1;
 
 
 	while(1) 
@@ -127,12 +126,14 @@ int main() {
 
 		// State Machine for palLED palette functions
 		switch (State) {
-			case RGB_PICKER: {
+			case RGB_PICKER1: { 
 				loadSolidColor(Matrix, MatrixColors, activeColor);
+				loadActiveWheel(Ring, RingColors, activeColor, RGB);
 				if (enc_count_update) {
 					// To Do:
 					// break out into separate function & file
 					// handle full on/full off wrapping?  It's kind of handy for testing
+					enc_count_update = 0; // clear first so I don't miss counts
 					activeColor.red += Left.change;
 					Left.change = 0;
 					activeColor.grn += Middle.change;
@@ -141,13 +142,42 @@ int main() {
 					Right.change = 0;
 					printColor(activeColor);
 					loadSolidColor(Matrix, MatrixColors, activeColor);
-					enc_count_update = 0;
+					loadActiveWheel(Ring, RingColors, activeColor, RGB);
+				}
+				break;
+			}
+			case RGB_PICKER2: {
+				loadSolidColor(Matrix, MatrixColors, activeColor);
+				loadActiveWheel(Ring, RingColors, activeColor, RGB);
+				if (enc_count_update) {
+					// To Do:
+					// break out into separate function & file
+					// handle full on/full off wrapping?  It's kind of handy for testing
+					enc_count_update = 0; // clear first so I don't miss counts
+
+					// goes to HSL to slide active Color around the wheel based on Left encoder
+					HSL hueColor = rgb2hsl(activeColor);
+					hueColor.hue += Left.change * 4; // 30 detents on the encoder = 3 encoder rotations per color wheel rotation
+					Left.change = 0;
+					if (hueColor.hue > 65000) hueColor.hue = 360 - (65535 - hueColor.hue);
+					if (hueColor.hue >= 360) hueColor.hue -= 360;
+
+					activeColor = hsl2rgb(hueColor);
+
+					Middle.change = 0;	// ignores middle and right
+					Right.change = 0;
+
+					// Sends new color out serial port and updates LEDs
+					printColor(activeColor);
+					loadSolidColor(Matrix, MatrixColors, activeColor);
+					loadActiveWheel(Ring, RingColors, activeColor, RGB);
 				}
 				break;
 			}
 			case COMPLEMENTARY: {
+				loadFixedWheel(Ring, RingColors, RYB);
 				loadComplement(Matrix, MatrixColors, activeColor);
-				Left.change = 0;		// makes sure encoders do nothing and don't retain changed settings
+				Left.change = 0;		// ignores encoders and doesn't retain changed counts
 				Middle.change = 0;
 				Right.change = 0;
 				enc_count_update = 0;

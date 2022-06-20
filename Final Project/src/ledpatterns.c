@@ -190,7 +190,7 @@ const uint8_t wheelColors[][48] = {
 
 // assumes a fixed 16 LED wheel, uses above matrices
 // To Do: make dynamic based off of wheel size
-void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
+void loadFixedWheel (Strip strip, Color stripColors[], uint8_t type) {
     
     for (uint8_t i = 0; i < strip.len; i++) {
         stripColors[i].red = wheelColors[type][i*3];
@@ -200,6 +200,25 @@ void loadColorWheel (Strip strip, Color stripColors[], uint8_t type) {
     showIt(strip, stripColors);
 }
 
+void loadActiveWheel (Strip strip, Color stripColors[], Color activeColor, uint8_t type) {
+    uint8_t lednum = activeLED(strip, activeColor, type);
+    for (uint8_t i = 0; i < strip.len; i++) {
+        if (i == lednum) {
+            stripColors[i].red = activeColor.red;
+            stripColors[i].grn = activeColor.grn;
+            stripColors[i].blu = activeColor.blu;
+        }
+        else clearColor(&stripColors[i]);
+    }
+    showIt(strip, stripColors);
+}
+
+// clears any color / turns the LED off
+void clearColor (Color *stripColors) {
+    stripColors->red = 0;
+    stripColors->grn = 0;
+    stripColors->blu = 0;
+}
 
 // Returns which LED should be lit on the color wheel, according to RGB color passed in,
 //  number of LEDs in the wheel, and type of color wheel (RYB vs RGB)
@@ -226,6 +245,7 @@ uint8_t activeLED (Strip strip, Color color, uint8_t type) {
             // expands red to yellow space so hues 0-60 are displayed at 0-120 degrees (2x)
             // compresses green to blue space so hues 60-240 are displayed at 120-240 degrees ()
             // no change for blue to red space
+            // not sure if this is working how I expect
             if (hue < 60)       hue = hue * 2.0;                // color is between red and yellow
             else if (hue < 120) hue = hue * (2.0 / 3.0) + 80;   // color is between yellow and blue
 

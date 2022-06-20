@@ -17,6 +17,7 @@ Color hsl2rgb (HSL hslColor);
 
 // Determines which LED is closest to the active color on the color wheel
 uint8_t activeLED (Strip strip, Color color, uint8_t type);
+void clearColor (Color *stripColors);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          
@@ -27,6 +28,7 @@ void printColor(Color color);
 // loads colors into the stripColor buffer and shows them
 void loadSolidColor(Strip strip, Color stripColors[], Color color);     // one solid color for entire strip
 void loadComplement(Strip strip, Color stripColors[], Color color);     // half active color, half complement
-void loadColorWheel (Strip strip, Color stripColors[], uint8_t type);   // wheel only, fixed 16 LEDs
+void loadFixedWheel (Strip strip, Color stripColors[], uint8_t type);   // wheel only, fixed 16 LEDs
+void loadActiveWheel (Strip strip, Color stripColors[], Color color, uint8_t type);        // loads the wheel with only the active color
 
 #endif
