@@ -18,6 +18,7 @@ Color hsl2rgb (HSL hslColor);
 // Determines which LED is closest to the active color on the color wheel
 uint8_t activeLED (Strip strip, Color color, uint8_t type);
 void clearColor (Color *stripColors);
+void blinkStrips (Strip strip1, Strip strip2);
 
 // outputs colors according to the values in the stripColors buffer, adjusts brightness first
 void showIt(Strip strip, Color stripColors[]);                          

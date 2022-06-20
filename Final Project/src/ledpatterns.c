@@ -214,10 +214,21 @@ void loadActiveWheel (Strip strip, Color stripColors[], Color activeColor, uint8
 }
 
 // clears any color / turns the LED off
-void clearColor (Color *stripColors) {
+inline void clearColor (Color *stripColors) {
     stripColors->red = 0;
     stripColors->grn = 0;
     stripColors->blu = 0;
+}
+
+// Turns both strips off for a brief amount of time
+// Useful to indicate mode change
+// weird, couldn't initialize Color structures with strip1.len / strip2.len variables
+void blinkStrips (Strip strip1, Strip strip2) {
+    Color ringOff[RING_PIXELS] = {0};
+    Color matrixOff[MATRIX_PIXELS] = {0};
+    showIt(strip1, ringOff);
+    showIt(strip2, matrixOff);
+    sleep_ms(150);
 }
 
 // Returns which LED should be lit on the color wheel, according to RGB color passed in,

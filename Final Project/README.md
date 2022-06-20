@@ -36,7 +36,7 @@ Pico sort of has firmware updates built in, I could explain this in the report. 
 ### Misc Thoughts:
 I want to make this code easily extensible so more LED strips can be controlled.  I'm not sure how to do this without the use of C++ classes.  In that case, each LED strip could be a class and initialization could be handled upon declaration.  It seems like with just using structures, there's a lot of manual stuff that needs to be added when a new strip is added.  I've tried to make it so that palled.h is the only file that needs additions, along with intitial declaration in main.c.
 
-Haha oh shit maths.  I really didn't think this whole color wheel aspect through very well, thinking I was going to be able to bracket colors easily with comparisons in order to place them on the color wheel.  Turns out that it's a lot more complicated to go from RGB to color wheel position.  I mean, I should have figured that it was more trig-happy with the whole wheel thing.
+Haha oh shit maths.  I really didn't think this whole color wheel aspect through very well, thinking I was going to be able to bracket colors easily with comparisons in order to place them on the color wheel.  Turns out that it's a lot more complicated to go from RGB to color wheel position.  I mean, I should have figured that it was more trig-happy with the whole wheel thing.  Anyway, ended up doing a lot of color space transformations.  Fortunately, the hue in HSL colorspace is basically just the position around the color wheel.  Now that I've read about HSV colorspace, I kind of want to try that one out.  I also want to get rid of the deadspace around 0 brightness.  There's too much.
 
 Excellent step by step process from this article:
 https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
@@ -44,7 +44,9 @@ https://www.niwa.nu/2013/05/math-behind-colorspace-conversions-rgb-hsl/
 Interesting about color wheels:
 https://bahamas10.github.io/ryb/about.html
 
-Will have to figure out how to convert it to a RYB HSL colorspace since that's more inline with color theory complementary/adjacent teachings.  Ah.  Should just be able to bracket which angles correspond to which LEDs differently, no problem.
+Will have to figure out how to convert it to a RYB HSL colorspace since that's more inline with color theory complementary/adjacent teachings.  Ah.  Should just be able to bracket which angles correspond to which LEDs differently.
+
+The brightness interacts with the adjustments in interesting ways, will have to play more to figure stuff out.  Some things are not intuitive as they stand.
 
 Also, it would have been smart to use an LED ring that's a multiple of 12 - 3 for displaying triads and even RGB/RYB splits, and 4 for tetrads.
 

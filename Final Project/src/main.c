@@ -69,7 +69,7 @@ Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
 Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
-enum deviceState {RGB_PICKER1, RGB_PICKER2, COMPLEMENTARY};
+enum deviceState {RGB_PICKER1, RGB_PICKER2, COMPLEMENTARY, NUM_STATES};
 
 int main() {
 
@@ -120,8 +120,9 @@ int main() {
 		// Checks for State change
 		if (butt_date) {
 			State += 1;
-			State %= 2;
+			State %= NUM_STATES;
 			butt_date = 0;
+			blinkStrips(Matrix, Ring);
 		}
 
 		// State Machine for palLED palette functions
