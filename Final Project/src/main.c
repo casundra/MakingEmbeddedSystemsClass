@@ -1,4 +1,8 @@
-// insert copyright and license
+// Copyright 2022 by Carrie Sundra, Alpenglow Industries
+// www.alpenglowindustries.com
+// @alpenglowind on twitter & instagram
+// Alpenglow Industries on GitHub & YouTube
+//
 // insert brief overview
 
 // standard Rpi Pico SDK libraries (included via Wizio Platform)
@@ -27,6 +31,9 @@ Encoder Left = {LEFTA, LEFTB, 0, 0, 0, 0};
 volatile uint8_t enc_count_update = 0;		// encoder count update flag
 volatile uint8_t butt_date = 0; 			// button update flag
 
+// Interrupts for all GPIOs
+// They have one shared interrupt and you have to figure out who called it (gpio)
+// Used for encoders and button
 void isr_gpio_callback(uint gpio, uint32_t events) {
 
 	switch (gpio) {
@@ -61,7 +68,7 @@ void isr_gpio_callback(uint gpio, uint32_t events) {
 	}
 }
 
-// Color Structures and Globals
+// LED Strip Structures, Color Structures, and Globals
 Color activeColor = {255, 0, 0};
 Color solidColor = {0, 53, 62};
 Strip Matrix = {5, MATRIX_PIXELS, LED_MATRIX, MATRIX_SM};
@@ -69,6 +76,8 @@ Strip Ring = {5, RING_PIXELS, LED_RING, RING_SM};
 Color MatrixColors[MATRIX_PIXELS] = {0};
 Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
+
+// State Machine
 enum deviceState {RGB_PICKER1, RGB_PICKER2, COMPLEMENTARY, NUM_STATES};
 
 int main() {
@@ -102,6 +111,7 @@ int main() {
 	adc_select_input(0);		// select which ADC channel to read
 	brightInit();				// loads buffer with 1 second of brightness pot readings
 
+	// Serial over USB initialization
 	sleep_ms(3000);		// gives IDE time to re-establish COM port before initiating Console
 	printf("What rolls downs stairs, alone or in pairs, runs over your over neighbor's dog?\n");
 	printf("What's great for a snack and fits on your back, it's ");
@@ -109,11 +119,12 @@ int main() {
 	printf("!\n");
 	ConsoleInit();		// initializes the serial console command interface
 
-
-	// Packs some Color arrays
+	// State Machine initialization
 	enum deviceState State = RGB_PICKER1;
 
-
+	// To Do:
+	// Should probably break out LED show commands and put in separate loop that can be run at constant rate
+	// That would allow patterns and possibly brightness dithering in the future
 	while(1) 
 	{
 
