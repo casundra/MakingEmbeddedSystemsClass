@@ -26,6 +26,7 @@ I do believe I have achieved this!  I have implemented:
 ### Report
 
 ### Video
+https://www.youtube.com/watch?v=KaCqmaZs_2U
 
 ### Bonus Points
 Pico sort of has firmware updates built in, I could explain this in the report.  Probably will not get to the other 2.
