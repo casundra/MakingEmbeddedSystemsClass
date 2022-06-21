@@ -29,12 +29,6 @@ https://docs.google.com/document/d/1CBCMdmgmHMDjXPEUQl8f7U_ScRVVKMyXx1iam2KiW5Y/
 ### Video
 https://www.youtube.com/watch?v=KaCqmaZs_2U
 
-### Bonus Points
-Pico sort of has firmware updates built in, I could explain this in the report.  Probably will not get to the other 2.
-* analysis of power used in the system (expected vs actual)
-* implementation of firmware update with a description in the report of how it works
-* a description of profiling the system to make it run faster
-
 ### Misc Thoughts:
 I want to make this code easily extensible so more LED strips can be controlled.  I'm not sure how to do this without the use of C++ classes.  In that case, each LED strip could be a class and initialization could be handled upon declaration.  It seems like with just using structures, there's a lot of manual stuff that needs to be added when a new strip is added.  I've tried to make it so that palled.h is the only file that needs additions, along with intitial declaration in main.c.
 
