@@ -2,7 +2,7 @@
 ## Making Embedded Systems Final Project
 ## Orange Stars Cohort
 
-For All The Details, see the final report.
+For All The Details, see the final report, link below.
 
 Hardware and IDE Details:
 * RP2040 on an Rpi Pico dev board
@@ -15,7 +15,7 @@ I do believe I have achieved this!  I have implemented:
 * State Machine - very basic, changes modes on the Matrix
 * State Machine - the Consolinator, but this wasn't really mine, I just added to it
 * Interrupt - via button to change modes
-* Interrupt - via encoders x3 to count counts
+* Interrupt - via encoders x6 to count counts
 * Peripheral 1 - encoders x3, Left Middle Right, (custom GPIO driver)
 * Peripheral 2 - rotary potentiometer (ADC)
 * Peripheral 3 - LED strips x2, Matrix & Ring (WS2812 x2 via PIO)
@@ -24,6 +24,7 @@ I do believe I have achieved this!  I have implemented:
 * Algorithmically interesting - maybe light on this at the moment, but the bigger picture project definitely will have an interesting large state machine and algorithms for transforming color spaces
 
 ### Report
+https://docs.google.com/document/d/1CBCMdmgmHMDjXPEUQl8f7U_ScRVVKMyXx1iam2KiW5Y/edit?usp=sharing
 
 ### Video
 https://www.youtube.com/watch?v=KaCqmaZs_2U
@@ -52,3 +53,6 @@ The brightness interacts with the adjustments in interesting ways, will have to 
 Also, it would have been smart to use an LED ring that's a multiple of 12 - 3 for displaying triads and even RGB/RYB splits, and 4 for tetrads.
 
 Is it better to call a function 64 times in a row inside a for loop, or to call a function once and have it loop 64 times internally?
+
+Hey it's an online calculator that shows the color schemes I want to do with RYB and RGB!
+https://www.sessions.edu/color-calculator/

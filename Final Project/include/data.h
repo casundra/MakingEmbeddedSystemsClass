@@ -1,23 +1,16 @@
-// added to the below by Carrie Sundra
+// Copyright 2022 by Carrie Sundra, Alpenglow Industries
+// www.alpenglowindustries.com
+// @alpenglowind on twitter & instagram
+// Alpenglow Industries on GitHub & YouTube
+//
 // MIT License
 
-/*************************************************
-** Command Line Interface
-** This is from https://github.com/eleciawhite/reusable
-** (MIT license)
-*************************************************/
+// data header storage for Console data output
+// will likely have more in the future
 
 #ifndef DATA_H
 #define DATA_H
 
 const char *rgbHeader[] = {"LED#", "RED", "GREEN", "BLUE", "LED#", "RADJ", "GADJ", "BADJ", "LED#", "HUE", "SAT\t", "LUM\t", "LED#", "RED", "GREEN", "BLUE", "LEDNUM"};
-
-// uint8_t rgb[4][3] = 
-// {
-//   {255, 255, 255},
-//   {127, 127, 127},
-//   {63, 63, 63},
-//   {0, 0, 0},
-// };
 
 #endif // DATA_H

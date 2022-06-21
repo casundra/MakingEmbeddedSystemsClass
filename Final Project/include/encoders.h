@@ -1,4 +1,11 @@
 
+// Copyright 2022 by Carrie Sundra, Alpenglow Industries
+// www.alpenglowindustries.com
+// @alpenglowind on twitter & instagram
+// Alpenglow Industries on GitHub & YouTube
+//
+// MIT License
+
 #ifndef ENCODERS_H
 #define ENCODERS_H
 
@@ -17,12 +24,12 @@ typedef struct EncoderStruct {
 } Encoder;
 
 // see .c file for full comments on each function
-void encoder_init(uint phasea, uint phaseb);
-void button_init(uint pin);
-uint8_t button_read(uint8_t pin);
-uint8_t encoder_readA(Encoder *encoder);
-uint8_t encoder_readB(Encoder *encoder);
-uint8_t encoder_inc(Encoder *encoder);
-uint8_t encoder_print(int16_t lcounts, int16_t mcounts, int16_t rcounts, uint8_t update);
+void encoder_init(uint phasea, uint phaseb);	// initializes phase pins and interrupts
+void button_init(uint pin);						// initializes button pin and interrupt
+uint8_t button_read(uint8_t pin);			// reads the button (physically part of the encoders)
+uint8_t encoder_readA(Encoder *encoder);	// reads phase A of encoder
+uint8_t encoder_readB(Encoder *encoder);	// reads phase B of encoder
+uint8_t encoder_inc(Encoder *encoder);		// increments encoder counts
+uint8_t encoder_print(int16_t lcounts, int16_t mcounts, int16_t rcounts, uint8_t update);	// test function, prints encoder values to serial port
 
 #endif

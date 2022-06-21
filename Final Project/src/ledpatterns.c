@@ -1,3 +1,10 @@
+// Copyright 2022 by Carrie Sundra, Alpenglow Industries
+// www.alpenglowindustries.com
+// @alpenglowind on twitter & instagram
+// Alpenglow Industries on GitHub & YouTube
+//
+// MIT License
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,7 +20,11 @@
 extern uint8_t gammaCorr;
 
 // gammaMatrix is a lookup table for brightness that corrects for our eyeballs' non-linear perception of brightness
-// another great article on gamma correction: https://hackaday.com/2016/08/23/rgb-leds-how-to-master-gamma-and-hue-for-perfect-brightness/
+// another great article on gamma correction: https://hackaday.com/2016/08/23/rgb-leds-how-to-master-gamma-and-hue-for-perfect-brightness//
+// To Do:
+// Figure out a table without as big of a dead zone at the 0 end
+// read this: https://www.scantips.com/lights/gamma3.html
+
 const uint8_t gammaMatrix[2][256] =
 { 
     // linear / uncorrected
@@ -34,7 +45,8 @@ const uint8_t gammaMatrix[2][256] =
     224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 
     240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255},
 
-    // corrected by factor of 2.8 re: adafruit tutorial
+    // corrected by factor of 2.8 re: adafruit tutorials
+    // https://learn.adafruit.com/led-tricks-gamma-correction/the-quick-fix
     // https://learn.adafruit.com/led-tricks-gamma-correction/the-longer-fix
     // Con: large dead zone near zero
    {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -129,6 +141,7 @@ void loadComplement(Strip strip, Color stripColors[], Color color) {
 #define TRIAD1  (RING_PIXELS / 3)
 #define TRIAD2  (RING_PIXELS - TRIAD1)
 
+// fixed values for 16 LED color wheels
 const uint8_t wheelColors[][48] = {
     { // RYB hand adjusted
     200,0,0,
@@ -200,6 +213,12 @@ void loadFixedWheel (Strip strip, Color stripColors[], uint8_t type) {
     showIt(strip, stripColors);
 }
 
+// loads the color wheel with the active color in its proper position
+// and all the rest of the LEDs off
+// To Do:
+// See if its possible to implement a version where inactive LEDs are dim and active is bright
+//  quick thought is that color changes so much with brightness and the lower brightness
+//  settings for active Color are used so much that this isn't really possible
 void loadActiveWheel (Strip strip, Color stripColors[], Color activeColor, uint8_t type) {
     uint8_t lednum = activeLED(strip, activeColor, type);
     for (uint8_t i = 0; i < strip.len; i++) {
@@ -222,7 +241,8 @@ inline void clearColor (Color *stripColors) {
 
 // Turns both strips off for a brief amount of time
 // Useful to indicate mode change
-// weird, couldn't initialize Color structures with strip1.len / strip2.len variables
+// To Do: look into structure initialization
+//      couldn't initialize Color structures with strip1.len / strip2.len variables
 void blinkStrips (Strip strip1, Strip strip2) {
     Color ringOff[RING_PIXELS] = {0};
     Color matrixOff[MATRIX_PIXELS] = {0};
@@ -250,6 +270,8 @@ uint8_t activeLED (Strip strip, Color color, uint8_t type) {
     HSL hslColor = rgb2hsl(color);
     float hue = hslColor.hue;
 
+    // RYB isn't fully tested, only RGB used for now
+    // If RYB really is that simple, could change the below to just use an if statement
     switch (type) {
         case RYB: {
             // yellow basically takes the place of green at 120 deg on the color wheel equilateral triangle
@@ -294,7 +316,7 @@ uint8_t activeLED (Strip strip, Color color, uint8_t type) {
 // To Do:
 // Refactor to multiply by 1000 and use all integer math
 // Proper rounding
-// Investigate HSV colorspace instead of HSL
+// Investigate HSV colorspace instead of HSL https://en.wikipedia.org/wiki/HSL_and_HSV
 HSL rgb2hsl (Color color) {
 
     HSL hslColor = {0};
@@ -415,9 +437,9 @@ Color hsl2rgb (HSL hslColor) {
     return color;
 }
 
+    // Keeping the below just for color reference during development
 
-
-  // // a decent RYB color wheel
+    // // a decent RYB color wheel
     // put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED
     // put_pixel(urgb_u32(10, 0, 1), RING_SM);  // 1
     // put_pixel(urgb_u32(5, 0, 5), RING_SM);   // 2, PURPLE
@@ -434,14 +456,6 @@ Color hsl2rgb (HSL hslColor) {
     // put_pixel(urgb_u32(8, 4, 0), RING_SM);   // D, ORANGE
     // put_pixel(urgb_u32(9, 2, 0), RING_SM);   // E
     // put_pixel(urgb_u32(10, 1, 0), RING_SM);  // F
-
-    // display RYB at approx 120 degrees
-    // for (uint8_t i = 0; i < RING_PIXELS; i++) {
-    //     if (i == 0) put_pixel(urgb_u32(10, 0, 0), RING_SM);
-    //     else if (i == TRIAD1) put_pixel(urgb_u32(0, 0, 10), RING_SM);
-    //     else if (i == TRIAD2) put_pixel(urgb_u32(10, 10, 0), RING_SM);
-    //     else put_pixel(urgb_u32(0, 0, 0), RING_SM);
-    // }
 
 //     // a decent RGB color wheel
 //     put_pixel(urgb_u32(10, 0, 0), RING_SM);  // 0, RED

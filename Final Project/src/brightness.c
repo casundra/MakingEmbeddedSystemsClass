@@ -1,3 +1,10 @@
+// Copyright 2022 by Carrie Sundra, Alpenglow Industries
+// www.alpenglowindustries.com
+// @alpenglowind on twitter & instagram
+// Alpenglow Industries on GitHub & YouTube
+//
+// MIT License
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "brightness.h"

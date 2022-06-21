@@ -3,7 +3,7 @@
 // @alpenglowind on twitter & instagram
 // Alpenglow Industries on GitHub & YouTube
 //
-// insert brief overview
+// MIT License
 
 // standard Rpi Pico SDK libraries (included via Wizio Platform)
 #include <stdint.h>
@@ -29,7 +29,7 @@ Encoder Right = {RIGHTA, RIGHTB, 0, 0, 0, 0};
 Encoder Middle = {MIDDLEA, MIDDLEB, 0, 0, 0, 0};
 Encoder Left = {LEFTA, LEFTB, 0, 0, 0, 0};
 volatile uint8_t enc_count_update = 0;		// encoder count update flag
-volatile uint8_t butt_date = 0; 			// button update flag
+volatile uint8_t butt_date = 0; 			// button update flag (sorry I am 12)
 
 // Interrupts for all GPIOs
 // They have one shared interrupt and you have to figure out who called it (gpio)
@@ -78,7 +78,7 @@ Color RingColors[RING_PIXELS] = {0};
 uint8_t gammaCorr = 1;	// toggles gamma correction for brightness on/off, used in ledpatterns.c
 
 // State Machine
-enum deviceState {RGB_PICKER1, RGB_PICKER2, COMPLEMENTARY, NUM_STATES};
+enum deviceState {RGB_PICKER, HUE_PICKER, COMPLEMENTARY, NUM_STATES};
 
 int main() {
 
@@ -120,11 +120,18 @@ int main() {
 	ConsoleInit();		// initializes the serial console command interface
 
 	// State Machine initialization
-	enum deviceState State = RGB_PICKER1;
+	enum deviceState State = RGB_PICKER;
 
 	// To Do:
 	// Should probably break out LED show commands and put in separate loop that can be run at constant rate
-	// That would allow patterns and possibly brightness dithering in the future
+	// 	That would allow patterns and possibly brightness dithering in the future
+	// Code currently works in RGB primarly and converts to HSL on the fly wheen needed.
+	//	Turns out I need HSL way more than I anticipated.  Need to refactor code to generate HSL values
+	// 	once upon a color change, and maintain that info persistently, along with the RGB values.
+	// I did a lot with structures because I wanted to be able to refer to colors in a human-readable way
+	//	as color.red, color.grn, etc.  I don't know how much overhead this adds, could perhaps redo
+	//	using a normal array with index #defines as color[RED]?  But then would need 2D array and maybe
+	//	would require more nested loops which aren't as easy to understand.
 	while(1) 
 	{
 
@@ -138,7 +145,7 @@ int main() {
 
 		// State Machine for palLED palette functions
 		switch (State) {
-			case RGB_PICKER1: { 
+			case RGB_PICKER: { 
 				loadSolidColor(Matrix, MatrixColors, activeColor);
 				loadActiveWheel(Ring, RingColors, activeColor, RGB);
 				if (enc_count_update) {
@@ -158,11 +165,11 @@ int main() {
 				}
 				break;
 			}
-			case RGB_PICKER2: {
+			case HUE_PICKER: {
 				loadSolidColor(Matrix, MatrixColors, activeColor);
 				loadActiveWheel(Ring, RingColors, activeColor, RGB);
 				if (enc_count_update) {
-					// To Do:
+					// To Do: encoder 
 					// break out into separate function & file
 					// handle full on/full off wrapping?  It's kind of handy for testing
 					enc_count_update = 0; // clear first so I don't miss counts
@@ -187,6 +194,7 @@ int main() {
 				break;
 			}
 			case COMPLEMENTARY: {
+				// very rudimentary implementation, just shown as an example
 				loadFixedWheel(Ring, RingColors, RYB);
 				loadComplement(Matrix, MatrixColors, activeColor);
 				Left.change = 0;		// ignores encoders and doesn't retain changed counts
@@ -196,12 +204,6 @@ int main() {
 				break;
 			}
 		}
-
-
-
-		// Prints encoder position to serial port only when moved
-		// uint8_t printEncoders = enc_count_update;
-		// enc_count_update = encoder_print(Left.counts, Middle.counts, Right.counts, printEncoders);
 
 		// Reads brightness setting from pot and adjusts LED output
 		uint8_t brtness;
